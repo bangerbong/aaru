@@ -1,282 +1,133 @@
-/* =========================================
-   🎮 CONFIGURATION & CUSTOMIZATION
-   Change the values below to personalize!
-   ========================================= */
 const CONFIG = {
-    targetName: "My Love", // Put their name here
-    speed: 50,             // Typewriter speed (ms)
-    musicEnabled: false,   // Set to true if you uncomment the audio tag in HTML
-    
-    // Texts - Use | for line breaks
-    message1: "Hi [NAME],|I made something for you...",
-    message2: "You found me.|Starting tomorrow...|we go on a little adventure.|A story about us."
+    userName: "Alex", // Change this!
+    typeSpeed: 50,
+    totalHearts: 5,
+    messages: {
+        intro: "Hi [NAME],|I've been waiting for you.|Can you help me find|the 5 missing hearts?",
+        win: "You found them all!|Now we can start|our journey together.|Check back tomorrow."
+    }
 };
 
-// Replace placeholder with actual name
-const welcomeText = CONFIG.message1.replace("[NAME]", CONFIG.targetName);
+let heartsFound = 0;
+let girlPos = { x: 20, y: 50 }; // % values
+let keys = {};
+let gameActive = false;
 
-/* =========================================
-   🚀 GAME LOGIC & STATE
-   ========================================= */
-// DOM Elements
-const scenes = {
-    start: document.getElementById('scene-start'),
-    game: document.getElementById('scene-game'),
-    letter: document.getElementById('scene-letter'),
-    end: document.getElementById('scene-end')
+// Helpers
+const show = (id) => {
+    document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(id);
+    target.classList.remove('hidden');
+    setTimeout(() => target.classList.add('active'), 50);
 };
 
-const girl = document.getElementById('girl');
-const dog = document.getElementById('dog');
-const envelope = document.getElementById('envelope');
-const appContainer = document.getElementById('app');
-
-// State Variables
-let gameState = 'start'; // start, intro, play, win, end
-let girlX = 50;          // Starting pixel position
-let isMovingLeft = false;
-let isMovingRight = false;
-let gameLoopId;
-const moveSpeed = 4;
-
-// Typewriter Utility Function
-function typeWriter(text, elementId, speed, onComplete) {
+const type = (text, elementId, callback) => {
     const el = document.getElementById(elementId);
     el.innerHTML = "";
     let i = 0;
+    const cleanText = text.replace("[NAME]", CONFIG.userName);
     
-    function type() {
-        if (i < text.length) {
-            const char = text.charAt(i);
-            el.innerHTML += (char === '|') ? '<br>' : char;
+    const interval = setInterval(() => {
+        if (i < cleanText.length) {
+            el.innerHTML += cleanText[i] === "|" ? "<br>" : cleanText[i];
             i++;
-            setTimeout(type, speed);
-        } else if (onComplete) {
-            onComplete();
+        } else {
+            clearInterval(interval);
+            if (callback) callback();
         }
-    }
-    type();
-}
+    }, CONFIG.typeSpeed);
+};
 
-/* =========================================
-   🎬 SCENE MANAGEMENT
-   ========================================= */
-
-// SCENE 1: Start
+// Initialization
 window.onload = () => {
-    typeWriter(welcomeText, 'start-text', CONFIG.speed, () => {
-        const btn = document.getElementById('start-btn');
-        btn.classList.remove('hidden');
-        btn.onclick = startGame;
+    type(CONFIG.messages.intro, "start-text", () => {
+        document.getElementById('start-btn').classList.remove('hidden');
     });
 };
 
-function startGame() {
-    // Attempt to play music if enabled
-    if (CONFIG.musicEnabled) {
-        const audio = document.getElementById('bg-music');
-        if (audio) audio.play().catch(e => console.log("Audio play prevented by browser"));
-    }
-
-    // Transition
-    scenes.start.classList.remove('active');
-    scenes.game.classList.remove('hidden');
-    
-    setTimeout(() => {
-        scenes.game.classList.add('active');
-        runScene2Intro();
-    }, 500);
-}
-
-// SCENE 2: Intro Sequence
-function runScene2Intro() {
-    gameState = 'intro';
-    
-    // Position dog off screen right, then animate in
-    const targetDogX = appContainer.clientWidth - 100; 
-    
-    setTimeout(() => {
-        dog.classList.remove('out-of-screen');
-        dog.classList.add('walking');
-        dog.style.transform = `translateX(${targetDogX}px)`;
-        
-        // Stop dog animation and start game
-        setTimeout(() => {
-            dog.classList.remove('walking');
-            startMiniGame(targetDogX);
-        }, 1200); // Wait for transition to finish
-    }, 500);
-}
-
-// SCENE 3: Mini Game
-function startMiniGame(targetDogX) {
-    gameState = 'play';
-    
-    // Show mobile controls
-    document.getElementById('mobile-controls').classList.remove('hidden');
-    
-    // Spawn ambient hearts
+document.getElementById('start-btn').onclick = () => {
+    show('scene-game');
+    gameActive = true;
     spawnHearts();
+    requestAnimationFrame(update);
+};
 
-    // Start rendering loop
-    requestAnimationFrame(gameLoop);
-}
+// Input Handling
+window.onkeydown = (e) => keys[e.key] = true;
+window.onkeyup = (e) => keys[e.key] = false;
 
-// SCENE 4: Win State
-function triggerWin() {
-    gameState = 'win';
-    cancelAnimationFrame(gameLoopId);
-    girl.classList.remove('walking');
-    
-    // Dog jumps
-    dog.classList.add('jumping');
-    
-    setTimeout(() => {
-        dog.classList.remove('jumping');
-        
-        // Show Envelope above dog
-        const dogRect = dog.getBoundingClientRect();
-        envelope.style.left = `${dogRect.left + 5}px`;
-        envelope.classList.remove('hidden');
-        
-        envelope.onclick = openLetter;
-    }, 400);
-}
+const bindControl = (id, key) => {
+    const btn = document.getElementById(id);
+    btn.ontouchstart = (e) => { e.preventDefault(); keys[key] = true; };
+    btn.ontouchend = (e) => { e.preventDefault(); keys[key] = false; };
+};
+bindControl('btn-up', 'ArrowUp');
+bindControl('btn-down', 'ArrowDown');
+bindControl('btn-left', 'ArrowLeft');
+bindControl('btn-right', 'ArrowRight');
 
-function openLetter() {
-    envelope.classList.add('hidden');
-    scenes.letter.classList.remove('hidden');
-    
-    // Small delay to let CSS transition happen
-    setTimeout(() => {
-        scenes.letter.classList.add('active');
-        typeWriter(CONFIG.message2, 'letter-text', CONFIG.speed + 20, () => {
-            const btn = document.getElementById('close-letter-btn');
-            btn.classList.remove('hidden');
-            btn.onclick = endExperience;
-        });
-    }, 100);
-}
-
-// SCENE 5: End
-function endExperience() {
-    scenes.game.classList.remove('active');
-    scenes.letter.classList.remove('active');
-    scenes.end.classList.remove('hidden');
-    
-    setTimeout(() => {
-        scenes.end.classList.add('active');
-    }, 500);
-}
-
-/* =========================================
-   🕹️ MOVEMENT & COLLISION
-   ========================================= */
-
-function gameLoop() {
-    if (gameState !== 'play') return;
+// Game Engine
+function update() {
+    if (!gameActive) return;
 
     let moved = false;
-    const maxRight = appContainer.clientWidth - 50;
+    const speed = 0.8;
 
-    if (isMovingRight && girlX < maxRight) {
-        girlX += moveSpeed;
-        moved = true;
-    }
-    if (isMovingLeft && girlX > 10) {
-        girlX -= moveSpeed;
-        moved = true;
-    }
+    if (keys['ArrowUp'] && girlPos.y > 5) { girlPos.y -= speed; moved = true; }
+    if (keys['ArrowDown'] && girlPos.y < 90) { girlPos.y += speed; moved = true; }
+    if (keys['ArrowLeft'] && girlPos.x > 5) { girlPos.x -= speed; moved = true; }
+    if (keys['ArrowRight'] && girlPos.x < 90) { girlPos.x += speed; moved = true; }
 
-    // Apply movement & animation
-    girl.style.transform = `translateX(${girlX}px)`;
-    if (moved) girl.classList.add('walking');
-    else girl.classList.remove('walking');
+    const girlEl = document.getElementById('girl');
+    girlEl.style.left = girlPos.x + "%";
+    girlEl.style.top = girlPos.y + "%";
+    
+    // 3D Depth Layering: Y position determines who is in front
+    girlEl.style.zIndex = Math.floor(girlPos.y);
 
-    // Check Collision
-    checkCollision();
+    if (moved) girlEl.classList.add('walking');
+    else girlEl.classList.remove('walking');
 
-    gameLoopId = requestAnimationFrame(gameLoop);
+    checkCollisions();
+    requestAnimationFrame(update);
 }
-
-function checkCollision() {
-    const gRect = girl.getBoundingClientRect();
-    const dRect = dog.getBoundingClientRect();
-
-    // Simple bounding box collision
-    if (gRect.right >= dRect.left + 10 && gRect.left <= dRect.right) {
-        triggerWin();
-    }
-}
-
-/* =========================================
-   ⌨️ EVENT LISTENERS (Inputs)
-   ========================================= */
-
-// Keyboard
-window.addEventListener('keydown', (e) => {
-    if (gameState !== 'play') return;
-    if (e.key === 'ArrowRight') isMovingRight = true;
-    if (e.key === 'ArrowLeft') isMovingLeft = true;
-});
-
-window.addEventListener('keyup', (e) => {
-    if (e.key === 'ArrowRight') isMovingRight = false;
-    if (e.key === 'ArrowLeft') isMovingLeft = false;
-});
-
-// Mobile Touch Buttons
-const btnLeft = document.getElementById('btn-left');
-const btnRight = document.getElementById('btn-right');
-
-const handleTouchStart = (dir) => (e) => {
-    e.preventDefault(); // Prevent screen zoom/scroll
-    if (gameState !== 'play') return;
-    if (dir === 'left') isMovingLeft = true;
-    if (dir === 'right') isMovingRight = true;
-};
-
-const handleTouchEnd = (dir) => (e) => {
-    e.preventDefault();
-    if (dir === 'left') isMovingLeft = false;
-    if (dir === 'right') isMovingRight = false;
-};
-
-// Bind Mouse/Touch events for mobile controls
-btnLeft.addEventListener('mousedown', handleTouchStart('left'));
-btnLeft.addEventListener('touchstart', handleTouchStart('left'), {passive: false});
-btnLeft.addEventListener('mouseup', handleTouchEnd('left'));
-btnLeft.addEventListener('touchend', handleTouchEnd('left'));
-
-btnRight.addEventListener('mousedown', handleTouchStart('right'));
-btnRight.addEventListener('touchstart', handleTouchStart('right'), {passive: false});
-btnRight.addEventListener('mouseup', handleTouchEnd('right'));
-btnRight.addEventListener('touchend', handleTouchEnd('right'));
-
-/* =========================================
-   ✨ EFFECTS
-   ========================================= */
 
 function spawnHearts() {
-    const container = document.getElementById('heart-container');
-    
-    setInterval(() => {
-        if(gameState !== 'play' && gameState !== 'win') return;
-        
-        const heart = document.createElement('div');
-        heart.innerHTML = '❤';
-        heart.classList.add('floating-heart');
-        
-        // Randomize starting position and size
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.top = (Math.random() * 30 + 40) + '%';
-        heart.style.fontSize = (Math.random() * 1 + 0.5) + 'rem';
-        
-        container.appendChild(heart);
-        
-        // Cleanup after animation
-        setTimeout(() => {
-            heart.remove();
-        }, 3000);
-    }, 800);
+    const area = document.getElementById('play-area');
+    for (let i = 0; i < CONFIG.totalHearts; i++) {
+        const h = document.createElement('div');
+        h.className = 'collectible-heart';
+        h.innerHTML = '❤️';
+        h.style.left = (15 + Math.random() * 70) + "%";
+        h.style.top = (15 + Math.random() * 70) + "%";
+        area.appendChild(h);
+    }
 }
+
+function checkCollisions() {
+    const girlRect = document.getElementById('girl').getBoundingClientRect();
+    const hearts = document.querySelectorAll('.collectible-heart');
+    
+    hearts.forEach(h => {
+        const hRect = h.getBoundingClientRect();
+        if (!(girlRect.right < hRect.left || girlRect.left > hRect.right || 
+              girlRect.bottom < hRect.top || girlRect.top > hRect.bottom)) {
+            h.remove();
+            heartsFound++;
+            document.getElementById('heart-count').innerText = `❤️ ${heartsFound}/5`;
+            if (heartsFound === CONFIG.totalHearts) winGame();
+        }
+    });
+}
+
+function winGame() {
+    gameActive = false;
+    show('scene-letter');
+    type(CONFIG.messages.win, "letter-text", () => {
+        document.getElementById('close-btn').classList.remove('hidden');
+    });
+}
+
+document.getElementById('close-btn').onclick = () => {
+    show('scene-end');
+};
