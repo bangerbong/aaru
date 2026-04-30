@@ -1,79 +1,64 @@
 :root {
-    --grass: #9de39d;
-    --grass-dark: #86c988;
-    --sky: #ffc3a0;
-    --pink: #ff85a1;
-    --house-red: #e53935;
+    --sky: #a3d8f4;
+    --grass: #7cfc00;
+    --girl-pink: #ff8fa3;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 body { font-family: 'VT323', monospace; background: #000; overflow: hidden; }
 #app { width: 100vw; height: 100vh; position: relative; }
 
-/* Scenes */
-.scene { position: absolute; inset: 0; opacity: 0; transition: 0.8s; pointer-events: none; z-index: 1; }
+.scene { position: absolute; inset: 0; opacity: 0; transition: 0.5s; pointer-events: none; }
 .scene.active { opacity: 1; pointer-events: auto; }
 .hidden { display: none !important; }
-.bg-black { background: #1a1a1a; color: white; display: flex; align-items: center; justify-content: center; }
 
-/* World Visuals */
-.world { width: 100%; height: 100%; background: var(--grass); position: relative; }
-.sky-layer { height: 40%; background: linear-gradient(to bottom, #ff9a9e, var(--sky)); position: relative; }
-.sun { position: absolute; top: 30px; right: 40px; width: 50px; height: 50px; background: #fffde7; border-radius: 50%; box-shadow: 0 0 20px #fff; }
+/* Game Camera & World */
+.game-container { width: 100%; height: 100%; background: var(--sky); overflow: hidden; position: relative; }
+.world-bounds { width: 3000px; height: 100%; position: absolute; bottom: 0; background: linear-gradient(to bottom, transparent 80%, #55a630 80%); }
 
-.play-surface { position: absolute; bottom: 0; width: 100%; height: 70%; overflow: hidden; }
+.sky-bg { position: fixed; width: 100%; height: 100%; z-index: 0; }
+.sun { position: absolute; top: 40px; right: 80px; width: 60px; height: 60px; background: #fffde7; border-radius: 50%; box-shadow: 0 0 40px #fff; }
+
+/* Characters */
+.character { position: absolute; bottom: 20%; transition: transform 0.1s; z-index: 10; }
+
+/* The Girl */
+.girl { width: 50px; height: 80px; }
+.g-hair { width: 54px; height: 30px; background: #3d2b1f; border-radius: 15px 15px 0 0; }
+.g-head { width: 46px; height: 40px; background: #ffe0bd; border-radius: 10px; margin-top: -5px; position: relative; }
+.g-eyes { width: 6px; height: 6px; background: #000; border-radius: 50%; position: absolute; top: 20px; left: 8px; box-shadow: 24px 0 #000; }
+.g-body { width: 40px; height: 40px; background: var(--girl-pink); border-radius: 10px 10px 0 0; margin-top: -5px; }
+
+/* Snoopy */
+.snoopy { width: 40px; height: 40px; z-index: 9; }
+.s-head { width: 24px; height: 20px; background: #fff; border-radius: 10px; position: relative; }
+.s-ear { width: 10px; height: 15px; background: #000; position: absolute; right: -2px; top: 2px; border-radius: 5px; }
+.s-nose { width: 5px; height: 5px; background: #000; position: absolute; left: -2px; top: 8px; border-radius: 50%; }
+.s-body { width: 30px; height: 18px; background: #fff; border-radius: 10px; margin-top: -5px; }
 
 /* Doghouse */
-.doghouse { position: absolute; left: 60%; bottom: 40%; width: 100px; height: 100px; z-index: 50; }
-.house-roof { width: 120px; height: 20px; background: var(--house-red); position: absolute; top: -10px; left: -10px; border-radius: 5px; }
-.house-body { width: 100px; height: 80px; background: var(--house-red); border: 4px solid #b71c1c; }
-.house-door { width: 40px; height: 50px; background: #333; position: absolute; bottom: 0; left: 30px; border-radius: 20px 20px 0 0; }
+.doghouse-static .roof { width: 100px; height: 20px; background: #d32f2f; border-radius: 5px; }
+.doghouse-static .base { width: 80px; height: 60px; background: #d32f2f; margin: 0 auto; border: 3px solid #b71c1c; }
 
-/* Dog (Snoopy Style) */
-.dog-on-roof { position: absolute; top: -50px; left: 30px; animation: breathe 2s infinite ease-in-out; }
-.d-head { width: 28px; height: 22px; background: #fff; border-radius: 12px; position: relative; }
-.d-ear-floppy { width: 12px; height: 18px; background: #000; position: absolute; right: -4px; top: 2px; border-radius: 5px; }
-.d-nose { width: 6px; height: 5px; background: #000; position: absolute; left: -2px; top: 10px; border-radius: 50%; }
-.d-body { width: 35px; height: 20px; background: #fff; border-radius: 10px; margin-top: -5px; }
+/* Hearts */
+.collectible { position: absolute; font-size: 2.5rem; animation: bounce 2s infinite; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-/* Girl (Toca style) */
-.girl { position: absolute; width: 45px; z-index: 100; transition: transform 0.1s; }
-.shadow { position: absolute; bottom: -5px; left: 5px; width: 35px; height: 10px; background: rgba(0,0,0,0.1); border-radius: 50%; }
-.g-hair { width: 50px; height: 30px; background: #4e342e; border-radius: 20px 20px 0 0; }
-.g-head { width: 45px; height: 40px; background: #ffe0bd; border-radius: 15px; margin-top: -5px; position: relative; }
-.g-eyes { width: 6px; height: 6px; background: #333; border-radius: 50%; position: absolute; top: 22px; left: 10px; box-shadow: 20px 0 #333; }
-.g-blush { width: 8px; height: 4px; background: #ffadaa; border-radius: 50%; position: absolute; top: 30px; left: 4px; box-shadow: 28px 0 #ffadaa; }
-.g-body { width: 38px; height: 35px; background: var(--pink); border-radius: 10px; margin: -5px auto 0; }
-
-/* UI & Hearts */
-#ui-bar { position: absolute; top: 20px; left: 20px; font-size: 2rem; color: #ff4d6d; text-shadow: 2px 2px #fff; z-index: 1000; }
-.collect-heart { position: absolute; font-size: 2.5rem; animation: float 2s infinite; cursor: pointer; z-index: 60; }
-.speech-bubble { position: absolute; background: white; padding: 10px; border-radius: 15px; top: -100px; left: 50%; transform: translateX(-50%); color: black; font-size: 1.2rem; border: 2px solid #ddd; z-index: 200; }
-
-/* Gate for Day 2 */
-.gate-area { position: absolute; right: 30px; bottom: 40%; text-align: center; }
-.signpost { background: #795548; color: white; padding: 5px 15px; border-radius: 5px; margin-bottom: 5px; }
-.gate { font-size: 3rem; opacity: 0.7; }
+/* UI */
+#ui { position: fixed; top: 20px; left: 20px; font-size: 2.5rem; color: #ff4d6d; text-shadow: 2px 2px #fff; z-index: 100; }
+#heart-popup { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 500; background: rgba(0,0,0,0.3); }
+.popup-content { background: white; padding: 20px 40px; border-radius: 20px; font-size: 1.8rem; border: 4px solid var(--girl-pink); animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
 
 /* Controls */
-#controls { position: absolute; bottom: 30px; left: 30px; z-index: 1000; }
-.dpad { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.dpad-mid { display: flex; gap: 55px; }
-.c-btn { width: 60px; height: 60px; background: rgba(255,255,255,0.5); border: 2px solid #fff; border-radius: 15px; font-size: 1.2rem; }
-.c-btn:active { background: white; }
+#controls { position: fixed; bottom: 30px; width: 100%; display: flex; justify-content: space-between; padding: 0 40px; z-index: 1000; }
+.c-btn { width: 80px; height: 80px; background: rgba(255,255,255,0.6); border: 4px solid #fff; border-radius: 20px; font-size: 2rem; font-family: 'VT323'; }
+.jump-btn { width: 120px; background: #fffa; }
 
-/* Overlays */
-.overlay { background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 2000; }
-.letter-card { background: #fffdf5; padding: 30px; border-radius: 20px; width: 80%; max-width: 400px; text-align: center; }
-.stamp { font-size: 4rem; margin-bottom: 10px; }
-.text-dark { color: #333; font-size: 1.8rem; }
-.pixel-btn { background: var(--pink); border: none; color: white; padding: 12px 25px; font-family: 'VT323'; font-size: 1.5rem; border-radius: 10px; cursor: pointer; margin-top: 15px; }
-
-/* Animations */
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-@keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-.walking { animation: bob 0.2s infinite; }
-@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-
-/* iPad fix */
-@media (hover: hover) and (pointer: fine) { #controls { display: none; } }
+/* End Screen */
+.overlay { background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+.end-card { background: white; padding: 40px; border-radius: 30px; text-align: center; color: #333; }
+.calendar { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+.day { width: 50px; height: 50px; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: bold; }
+.day.done { background: var(--girl-pink); color: white; border-color: var(--girl-pink); }
+.day.locked { background: #eee; color: #999; }
