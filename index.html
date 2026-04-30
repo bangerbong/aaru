@@ -3,36 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Day 1 - The Peanuts Journey</title>
+    <title>Day 1 - Peanuts Adventure</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="game-container">
         <div id="scene-start" class="scene active">
-            <div class="intro-card">
+            <div class="card">
                 <h1>Day 1</h1>
                 <p id="typewriter"></p>
-                <button id="start-btn" class="hidden">Begin Journey</button>
+                <button id="start-btn" class="hidden">Enter Garden</button>
             </div>
         </div>
 
         <div id="scene-game" class="scene hidden">
             <div id="camera">
                 <div id="world">
-                    <div class="parallax-bg"></div>
+                    <div class="sky-bg"></div>
                     
-                    <div class="snoopy-house" style="left: 600px;">
-                        <div class="roof"></div>
-                        <div class="house-body"></div>
-                    </div>
+                    <img src="Snoopyhouse.png" class="prop house" style="left: 600px;">
 
                     <div id="obstacles-layer"></div>
                     <div id="hearts-layer"></div>
 
                     <div id="woodstock-final" class="hidden">
                         <img src="Woodstock.png" class="w-img">
-                        <div id="letter-btn">✉️</div>
+                        <div id="letter-click">✉️</div>
                     </div>
 
                     <img src="Snoopy_Peanuts.png" id="snoopy" class="sprite">
@@ -42,14 +39,14 @@
             </div>
 
             <div id="hud">❤️ <span id="score">0</span>/5</div>
-            <div id="msg-box" class="hidden"><p id="msg-text"></p></div>
+            <div id="popup" class="hidden"><p id="popup-text"></p></div>
 
             <div class="controls">
-                <div class="dir-pad">
-                    <button id="left-btn" class="ctrl">◀</button>
-                    <button id="right-btn" class="ctrl">▶</button>
+                <div class="d-pad">
+                    <button id="btn-left" class="ctrl">◀</button>
+                    <button id="btn-right" class="ctrl">▶</button>
                 </div>
-                <button id="jump-btn" class="ctrl jump">JUMP</button>
+                <button id="btn-jump" class="ctrl jump">JUMP</button>
             </div>
         </div>
     </div>
