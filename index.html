@@ -3,55 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Day 1 - A Peanuts Story</title>
+    <title>Day 1 - The Peanuts Journey</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="game-container">
         <div id="scene-start" class="scene active">
-            <div class="overlay">
-                <div class="card">
-                    <h1>Day 1</h1>
-                    <p id="intro-text">Loading the magic...</p>
-                    <button id="start-btn" class="main-btn hidden">Enter the Garden</button>
-                </div>
+            <div class="intro-card">
+                <h1>Day 1</h1>
+                <p id="typewriter"></p>
+                <button id="start-btn" class="hidden">Begin Journey</button>
             </div>
         </div>
 
         <div id="scene-game" class="scene hidden">
-            <div id="viewport">
+            <div id="camera">
                 <div id="world">
-                    <div class="sky-bg"></div>
-                    <div class="ground"></div>
-
-                    <div id="hearts-layer"></div>
-
-                    <div id="woodstock-container" class="hidden">
-                        <img src="Woodstock.png" id="woodstock-img">
-                        <div id="final-letter" class="hidden">✉️</div>
+                    <div class="parallax-bg"></div>
+                    
+                    <div class="snoopy-house" style="left: 600px;">
+                        <div class="roof"></div>
+                        <div class="house-body"></div>
                     </div>
 
-                    <img src="Snoopy_Peanuts.png" id="snoopy" class="char-img">
+                    <div id="obstacles-layer"></div>
+                    <div id="hearts-layer"></div>
 
-                    <img src="Girl.png" id="girl" class="char-img">
+                    <div id="woodstock-final" class="hidden">
+                        <img src="Woodstock.png" class="w-img">
+                        <div id="letter-btn">✉️</div>
+                    </div>
+
+                    <img src="Snoopy_Peanuts.png" id="snoopy" class="sprite">
+                    <img src="Girl.png" id="girl" class="sprite">
                 </div>
+                <div class="grass-floor"></div>
             </div>
 
-            <div id="ui">❤️ <span id="score">0</span>/5</div>
-
-            <div id="popup" class="popup hidden">
-                <div class="popup-content">
-                    <p id="popup-text"></p>
-                </div>
-            </div>
+            <div id="hud">❤️ <span id="score">0</span>/5</div>
+            <div id="msg-box" class="hidden"><p id="msg-text"></p></div>
 
             <div class="controls">
-                <div class="dpad">
-                    <button id="left" class="btn">◀</button>
-                    <button id="right" class="btn">▶</button>
+                <div class="dir-pad">
+                    <button id="left-btn" class="ctrl">◀</button>
+                    <button id="right-btn" class="ctrl">▶</button>
                 </div>
-                <button id="jump" class="btn jump-btn">JUMP</button>
+                <button id="jump-btn" class="ctrl jump">JUMP</button>
             </div>
         </div>
     </div>
