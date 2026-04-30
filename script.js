@@ -1,123 +1,124 @@
 const CONFIG = {
     heartMsgs: [
-        "You're the most amazing person I know! ❤️",
+        "A little heart for a big love! ❤️",
         "Snoopy says you're doing great! 🐾",
-        "Every day with you is a gift. 🎁",
-        "I'm so lucky you're mine. ✨",
-        "Day 1 Complete! I love you so much. 💖"
+        "Each heart brings us closer! 🎁",
+        "I'm so lucky you're my person. ✨",
+        "Day 1 Complete! Look who's here... 💖"
     ]
 };
 
-let gX = 150, gY = 0, sX = 80, velY = 0, isJump = false;
-let score = 0, active = false;
-const keys = {};
+let gX = 150, gY = 0, sX = 80, vY = 0;
+let keys = {}, active = false, score = 0, jump = false;
 
-// Typewriter
 function type(text, id, cb) {
     const el = document.getElementById(id);
     el.innerHTML = ""; let i = 0;
-    const interval = setInterval(() => {
-        if (i < text.length) {
-            el.innerHTML += text[i] === "|" ? "<br>" : text[i];
-            i++;
-        } else {
-            clearInterval(interval);
-            if (cb) cb();
-        }
-    }, 40);
+    const itv = setInterval(() => {
+        if(i < text.length) { el.innerHTML += text[i] === "|" ? "<br>" : text[i]; i++; }
+        else { clearInterval(itv); if(cb) cb(); }
+    }, 45);
 }
 
 window.onload = () => {
-    type("Welcome to Day 1.|Let's find some hearts|with our friend Snoopy!", "start-text", () => {
+    type("Welcome to our world!|Help Snoopy find the hearts|to unlock Day 2.", "start-text", () => {
         document.getElementById('start-btn').classList.remove('hidden');
     });
 };
 
 document.getElementById('start-btn').onclick = () => {
     document.getElementById('scene-start').classList.remove('active');
-    const g = document.getElementById('scene-game');
-    g.classList.remove('hidden');
-    setTimeout(() => { g.classList.add('active'); active = true; spawnHearts(); loop(); }, 50);
+    document.getElementById('scene-game').classList.remove('hidden');
+    setTimeout(() => { document.getElementById('scene-game').classList.add('active'); active = true; spawn(); loop(); }, 50);
 };
 
-// Input Handling
-const bind = (id, k) => {
-    const b = document.getElementById(id);
-    b.ontouchstart = (e) => { e.preventDefault(); keys[k] = true; };
-    b.ontouchend = (e) => { e.preventDefault(); keys[k] = false; };
+// Input
+const b = (id, k) => {
+    const el = document.getElementById(id);
+    el.ontouchstart = (e) => { e.preventDefault(); keys[k] = true; };
+    el.ontouchend = (e) => { e.preventDefault(); keys[k] = false; };
 };
-bind('left', 'ArrowLeft'); bind('right', 'ArrowRight');
+b('left', 'ArrowLeft'); b('right', 'ArrowRight');
 document.getElementById('jump').ontouchstart = (e) => {
-    e.preventDefault(); if (!isJump) { velY = 22; isJump = true; }
+    e.preventDefault(); if(!jump) { vY = 22; jump = true; }
 };
 
-function spawnHearts() {
+function spawn() {
     const layer = document.getElementById('hearts-layer');
-    for (let i = 0; i < 5; i++) {
+    for(let i=0; i<5; i++) {
         const h = document.createElement('div');
-        h.className = 'collectible';
-        h.innerHTML = '❤️';
-        h.style.position = "absolute";
-        h.style.fontSize = "3rem";
-        h.style.left = (800 + (i * 600)) + "px";
-        h.style.bottom = (25 + Math.random() * 15) + "%";
+        h.className = 'heart'; h.innerHTML = '❤️';
+        h.style.left = (800 + (i*500)) + "px";
+        h.style.bottom = (25 + Math.random()*15) + "%";
         layer.appendChild(h);
     }
 }
 
 function loop() {
-    if (!active) return;
+    if(!active) return;
+    if(keys['ArrowLeft'] && gX > 50) { gX -= 8; document.getElementById('girl').style.transform="scaleX(-1)"; }
+    if(keys['ArrowRight'] && gX < 2900) { gX += 8; document.getElementById('girl').style.transform="scaleX(1)"; }
 
-    if (keys['ArrowLeft'] && gX > 0) { gX -= 8; document.getElementById('girl').style.transform = "scaleX(-1)"; }
-    if (keys['ArrowRight'] && gX < 3800) { gX += 8; document.getElementById('girl').style.transform = "scaleX(1)"; }
+    gY += vY;
+    if(gY > 0) vY -= 1.3;
+    else { gY = 0; vY = 0; jump = false; }
 
-    gY += velY;
-    if (gY > 0) velY -= 1.3; else { gY = 0; velY = 0; isJump = false; }
+    sX += ( (gX - (document.getElementById('girl').style.transform==="scaleX(-1)"?-70:70)) - sX ) * 0.12;
 
-    // Snoopy following logic (smooth lerp)
-    const targetSX = gX - (document.getElementById('girl').style.transform === "scaleX(-1)" ? -70 : 70);
-    sX += (targetSX - sX) * 0.12;
+    const gEl = document.getElementById('girl');
+    const sEl = document.getElementById('snoopy');
+    gEl.style.left = gX + "px"; gEl.style.bottom = (20 + (gY/10)) + "%";
+    sEl.style.left = sX + "px"; sEl.style.bottom = (20 + (gY/10)) + "%";
+    sEl.style.transform = gEl.style.transform;
 
-    const girl = document.getElementById('girl');
-    const snoopy = document.getElementById('snoopy');
-    
-    girl.style.left = gX + "px";
-    girl.style.bottom = (20 + (gY / 10)) + "%";
-    
-    snoopy.style.left = sX + "px";
-    snoopy.style.bottom = (20 + (gY / 10)) + "%";
-    snoopy.style.transform = girl.style.transform;
-
-    document.getElementById('camera').scrollLeft = gX - window.innerWidth / 2;
-
-    checkCollisions();
+    document.getElementById('camera').scrollLeft = gX - window.innerWidth/2;
+    check();
     requestAnimationFrame(loop);
 }
 
-function checkCollisions() {
+function check() {
     const gRect = document.getElementById('girl').getBoundingClientRect();
-    document.querySelectorAll('.collectible').forEach((h, i) => {
+    document.querySelectorAll('.heart').forEach(h => {
         const hRect = h.getBoundingClientRect();
-        if (Math.abs(gRect.left - hRect.left) < 50 && Math.abs(gRect.top - hRect.top) < 70) {
+        if(Math.abs(gRect.left - hRect.left) < 50 && Math.abs(gRect.top - hRect.top) < 70) {
             h.remove();
-            showPopup(CONFIG.heartMsgs[score]);
+            popup(CONFIG.heartMsgs[score]);
             score++;
             document.getElementById('score').innerText = score;
-            if (score === 5) { active = false; setTimeout(finish, 2000); }
+            if(score === 5) startWoodstock();
         }
     });
 }
 
-function showPopup(msg) {
+function popup(msg) {
     active = false;
     const p = document.getElementById('msg-popup');
     document.getElementById('popup-text').innerText = msg;
     p.classList.remove('hidden');
-    setTimeout(() => { p.classList.add('hidden'); active = true; loop(); }, 2500);
+    setTimeout(() => { p.classList.add('hidden'); active = true; loop(); }, 2000);
+}
+
+function startWoodstock() {
+    active = false;
+    const w = document.getElementById('woodstock');
+    w.classList.remove('hidden');
+    w.style.left = (gX + 200) + "px";
+    w.style.bottom = "80%";
+    
+    // Woodstock flies down to deliver letter
+    let wY = 80;
+    const flyDown = setInterval(() => {
+        wY -= 2;
+        w.style.bottom = wY + "%";
+        if(wY <= 30) {
+            clearInterval(flyDown);
+            setTimeout(finish, 1000);
+        }
+    }, 30);
 }
 
 function finish() {
     document.getElementById('scene-end').classList.remove('hidden');
     document.getElementById('scene-end').classList.add('active');
-    type("You completed Day 1!|I can't wait for|the next 12 days with you.", "end-msg");
+    type("You finished Day 1! Woodstock brought the mail.|Day 2: The Psychiatrist Booth unlocks in 24 hours.", "end-msg");
 }
