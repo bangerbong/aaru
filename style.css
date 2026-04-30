@@ -1,230 +1,78 @@
-/* --- Variables & Setup --- */
 :root {
-    --bg-sky: #cce0ff;
-    --bg-sky-top: #ffdde1;
-    --bg-ground: #a8e6cf;
-    --text-light: #f8f8f8;
-    --text-dark: #333;
-    --girl-skin: #ffcba4;
-    --girl-hair: #6b4423;
-    --girl-dress: #ff99cc;
-    --dog-color: #ffffff;
+    --sky-top: #ffafbd;
+    --sky-bottom: #ffc3a0;
+    --grass: #9be39d;
+    --grass-dark: #81c784;
+    --girl-pink: #ff85a1;
+    --hair-brown: #5d4037;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    user-select: none; /* Prevent text selection while playing */
-}
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'VT323', monospace; background: #000; overflow: hidden; }
 
-body {
-    font-family: 'VT323', monospace;
-    overflow: hidden;
-    background-color: #000;
-}
+#app { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
 
-#app {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    max-width: 800px; /* Limits size on ultra-wide desktop screens */
-    margin: 0 auto;
-    background-color: #000;
-    overflow: hidden;
-}
+/* Scene Logic */
+.scene { position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s; pointer-events: none; z-index: 1; }
+.scene.active { opacity: 1; pointer-events: auto; }
+.hidden { display: none !important; }
+.bg-black { background: #121212; color: #fff; }
 
-/* --- Scenes & Transitions --- */
-.scene {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transition: opacity 1s ease;
-    opacity: 0;
-    pointer-events: none;
-}
+.content-center { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; padding: 20px; }
+.typewriter-text { font-size: 2.2rem; line-height: 1.4; min-height: 60px; }
 
-.scene.active {
-    opacity: 1;
-    pointer-events: auto;
-}
+/* World Layout */
+.world-container { width: 100%; height: 100%; position: relative; background: var(--grass); }
+.sky-bg { height: 45%; background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom)); position: relative; }
+.sun { position: absolute; width: 60px; height: 60px; background: #fff9c4; border-radius: 50%; top: 40px; right: 50px; box-shadow: 0 0 30px #fff; }
+.play-area { position: absolute; bottom: 0; width: 100%; height: 60%; overflow: hidden; }
 
-.hidden {
-    display: none !important;
-}
-
-.bg-black { background-color: #000; color: var(--text-light); }
-.content-center {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    text-align: center;
-    padding: 20px;
-}
-
-.typewriter-text {
-    font-size: 2rem;
-    line-height: 1.5;
-    min-height: 80px;
-}
-
-/* --- Buttons --- */
-.pixel-btn {
-    font-family: 'VT323', monospace;
-    font-size: 1.5rem;
-    padding: 10px 20px;
-    margin-top: 30px;
-    background-color: #fff;
-    color: #000;
-    border: 4px solid #888;
-    border-style: outset;
-    cursor: pointer;
-}
-.pixel-btn:active { border-style: inset; }
-
-/* --- Game Environment --- */
-.sky {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 70%;
-    background: linear-gradient(to bottom, var(--bg-sky-top), var(--bg-sky));
-}
-
-.ground {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 30%;
-    background-color: var(--bg-ground);
-    border-top: 4px solid #81c784;
-}
-
-/* --- Characters (CSS Pixel Art) --- */
-.character {
-    position: absolute;
-    bottom: 25%; /* Stands on the grass line */
-    z-index: 10;
-}
+/* Character Art (Toca Inspired) */
+.character { position: absolute; transform-origin: bottom center; }
 
 /* Girl */
-.girl {
-    left: 10%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.1s;
-}
-.g-hair { width: 34px; height: 10px; background: var(--girl-hair); border-radius: 5px 5px 0 0; }
-.g-head { width: 26px; height: 26px; background: var(--girl-skin); }
-.g-body { width: 32px; height: 35px; background: var(--girl-dress); margin-top: 2px; border-radius: 5px 5px 0 0; }
-.g-legs { display: flex; gap: 8px; margin-top: 2px; }
-.g-leg { width: 8px; height: 16px; background: var(--girl-skin); }
+.girl { width: 50px; height: 90px; }
+.g-hair { width: 54px; height: 30px; background: var(--hair-brown); border-radius: 25px 25px 5px 5px; position: absolute; top: -5px; left: -2px; z-index: 2; }
+.g-head { width: 48px; height: 42px; background: #ffe0bd; border-radius: 15px; position: relative; z-index: 1; }
+.g-eyes { width: 6px; height: 6px; background: #333; border-radius: 50%; position: absolute; top: 22px; left: 10px; box-shadow: 22px 0 #333; }
+.g-blush { width: 8px; height: 4px; background: #ffadaa; border-radius: 50%; position: absolute; top: 30px; left: 5px; box-shadow: 30px 0 #ffadaa; }
+.g-body { width: 40px; height: 35px; background: var(--girl-pink); border-radius: 10px 10px 5px 5px; margin: -5px auto 0; }
+.g-legs { display: flex; justify-content: space-around; width: 30px; margin: 0 auto; }
+.g-leg { width: 8px; height: 12px; background: #ffe0bd; border-bottom: 4px solid #333; }
 
-/* Dog (Original Design) */
-.dog {
-    display: flex;
-    align-items: flex-end;
-    transition: transform 1s ease-out; /* Smooth entrance */
-}
-.out-of-screen { transform: translateX(100vw); }
-.d-head { width: 22px; height: 22px; background: var(--dog-color); border-radius: 8px 8px 0 0; position: relative; margin-bottom: 12px; z-index: 2; border: 1px solid #ddd;}
-.d-nose { width: 5px; height: 5px; background: black; position: absolute; left: -2px; top: 8px; border-radius: 50%; } /* Facing left */
-.d-ear { width: 8px; height: 14px; background: #e0e0e0; position: absolute; right: 2px; top: -4px; border-radius: 4px; }
-.d-body { width: 35px; height: 22px; background: var(--dog-color); border-radius: 8px; margin-left: -5px; border: 1px solid #ddd;}
-.d-legs { position: absolute; bottom: -10px; display: flex; gap: 15px; left: 10px; }
-.d-leg { width: 6px; height: 12px; background: var(--dog-color); border: 1px solid #ddd; border-top: none;}
-.d-tail { width: 8px; height: 15px; background: var(--dog-color); position: absolute; right: -5px; top: 10px; transform: rotate(30deg); border-radius: 4px; }
+/* Dog */
+.dog { width: 45px; height: 40px; right: 20%; bottom: 30%; }
+.d-head { width: 22px; height: 20px; background: #fff; border-radius: 8px; position: relative; z-index: 2; }
+.d-ear { width: 8px; height: 12px; background: #eee; position: absolute; right: -2px; top: 0; border-radius: 4px; }
+.d-nose { width: 4px; height: 4px; background: #000; border-radius: 50%; position: absolute; left: 2px; top: 10px; }
+.d-body { width: 35px; height: 22px; background: #fff; border-radius: 12px; margin-top: -8px; }
+.d-legs { display: flex; gap: 10px; padding-left: 5px; }
+.d-leg { width: 5px; height: 8px; background: #fff; border-bottom: 2px solid #ddd; }
 
-/* --- Animations --- */
-@keyframes walk-bounce {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-    100% { transform: translateY(0); }
-}
-.walking { animation: walk-bounce 0.3s infinite; }
+/* Animations */
+.walking { animation: bob 0.2s infinite ease-in-out; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-@keyframes dog-jump {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-}
-.jumping { animation: dog-jump 0.4s ease; }
+/* Hearts to Collect */
+#heart-count { position: absolute; top: -140px; left: 20px; font-size: 2rem; color: #ff4d6d; text-shadow: 2px 2px #fff; z-index: 100; }
+.collectible-heart { position: absolute; font-size: 2.5rem; cursor: pointer; z-index: 50; animation: heartFloat 2s infinite ease-in-out; }
+@keyframes heartFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-@keyframes float-heart {
-    0% { transform: translateY(0) scale(1); opacity: 0; }
-    20% { opacity: 0.8; }
-    100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
-}
-.floating-heart {
-    position: absolute;
-    color: #ff6b81;
-    font-size: 1.5rem;
-    animation: float-heart 3s linear infinite;
-}
+/* Controls */
+#mobile-controls { position: absolute; bottom: 40px; left: 40px; z-index: 200; }
+.d-pad { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.mid-row { display: flex; gap: 50px; }
+.ctrl-btn { width: 65px; height: 65px; background: rgba(255,255,255,0.4); border: 3px solid #fff; border-radius: 15px; font-size: 1.5rem; color: #333; }
+.ctrl-btn:active { background: #fff; }
 
-/* --- UI Elements --- */
-#envelope {
-    position: absolute;
-    font-size: 2.5rem;
-    bottom: 45%;
-    cursor: pointer;
-    animation: walk-bounce 1s infinite alternate;
-    z-index: 20;
-    transition: transform 0.2s;
-}
-#envelope:hover { transform: scale(1.2); }
+/* Overlay UI */
+.overlay { background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 300; }
+.letter-box { background: #fffdf5; padding: 40px; border-radius: 20px; width: 85%; max-width: 400px; text-align: center; box-shadow: 0 0 30px rgba(255,133,161,0.5); }
+.envelope-icon { font-size: 4rem; margin-bottom: 20px; }
+.text-dark { color: #333; }
+.pixel-btn { font-family: 'VT323'; font-size: 1.6rem; padding: 12px 25px; background: var(--girl-pink); color: white; border: none; border-radius: 10px; margin-top: 20px; cursor: pointer; }
 
-#mobile-controls {
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 30px;
-    z-index: 50;
-}
-.control-btn {
-    width: 60px;
-    height: 60px;
-    background: rgba(255, 255, 255, 0.5);
-    border: 2px solid #fff;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.control-btn:active { background: rgba(255, 255, 255, 0.8); }
-
-.overlay {
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-}
-
-.letter-box {
-    background: #fffdf5;
-    padding: 30px;
-    border: 2px solid #d4c4a8;
-    border-radius: 10px;
-    max-width: 80%;
-    width: 400px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    text-align: center;
-    color: var(--text-dark);
-}
-
-.text-dark { color: var(--text-dark); }
-.fade-in-text { font-size: 2.5rem; line-height: 1.4; }
-
-/* Responsive adjustments */
-@media (min-width: 768px) {
-    #mobile-controls { display: none !important; }
+/* Fix for iPad display */
+@media (hover: hover) and (pointer: fine) {
+    #mobile-controls { display: none; }
 }
