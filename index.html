@@ -3,78 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Day 1 - The Peanuts Journey</title>
+    <title>Day 1 - Peanuts Adventure</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
-        <div id="scene-start" class="scene active">
-            <div class="content-center">
-                <div class="card">
-                    <div class="intro-snoopy"></div>
-                    <p id="start-text"></p>
-                    <button id="start-btn" class="main-btn hidden">Enter Garden</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="scene-game" class="scene hidden">
-            <div id="sky-bg"></div>
-            <div class="viewport" id="camera">
-                <div class="world-floor" id="world">
-                    <div class="doghouse" style="left: 450px;">
+        <div id="scene-game" class="scene active">
+            <div class="camera" id="camera">
+                <div class="world" id="world">
+                    <div id="bg-layer"></div>
+                    
+                    <div class="doghouse" style="left: 600px;">
                         <div class="roof"></div>
                         <div class="base"></div>
-                        <div class="door"></div>
                     </div>
 
                     <div id="hearts-layer"></div>
 
                     <div id="woodstock" class="woodstock hidden">
-                        <div class="w-tuft"></div>
                         <div class="w-wing"></div>
                     </div>
 
                     <div id="snoopy" class="snoopy">
-                        <div class="s-head"><div class="s-ear"></div><div class="s-nose"></div></div>
-                        <div class="s-body"><div class="s-tail"></div></div>
+                        <div class="s-head"><div class="s-ear"></div></div>
+                        <div class="s-body"></div>
                     </div>
 
                     <div id="girl" class="girl">
                         <div class="g-hair"></div>
-                        <div class="g-head"><div class="g-eye"></div><div class="g-blush"></div></div>
+                        <div class="g-head"><div class="g-eye"></div></div>
                         <div class="g-body"></div>
-                    </div>
-
-                    <div class="gate-area" style="left: 2800px;">
-                        <div class="sign">DAY 2</div>
-                        <div class="lock">🔒</div>
                     </div>
                 </div>
             </div>
 
             <div id="ui">❤️ <span id="score">0</span>/5</div>
-            
+
             <div id="msg-popup" class="popup hidden">
                 <div class="popup-box"><p id="popup-text"></p></div>
             </div>
 
             <div class="controls">
-                <div class="dpad">
+                <div class="move-group">
                     <button id="left" class="btn">◀</button>
                     <button id="right" class="btn">▶</button>
                 </div>
                 <button id="jump" class="btn jump-btn">JUMP</button>
-            </div>
-        </div>
-
-        <div id="scene-end" class="scene overlay hidden">
-            <div class="end-card">
-                <div class="mail-box">📬</div>
-                <h2>Day 1 Complete</h2>
-                <p id="end-msg"></p>
-                <div class="timer">Next Chapter: 24:00:00</div>
             </div>
         </div>
     </div>
