@@ -3,55 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Day 1 - The Peanuts Journey</title>
+    <title>Day 1 - A Peanuts Story</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="game-container">
-        <div id="stage">
-            <div id="sky"></div>
-            <div id="world">
-                <div class="ground"></div>
-                
-                <div class="doghouse">
-                    <div class="roof"></div>
-                    <div class="base"></div>
-                    <div class="entrance"></div>
-                </div>
-
-                <div id="hearts-layer"></div>
-
-                <div id="woodstock" class="woodstock hidden">
-                    <div class="w-body"></div>
-                    <div id="letter" class="letter hidden">✉️</div>
-                </div>
-
-                <div id="snoopy" class="char snoopy">
-                    <div class="s-head"><div class="s-ear"></div></div>
-                    <div class="s-body"></div>
-                </div>
-
-                <div id="girl" class="char girl">
-                    <div class="g-hair"></div>
-                    <div class="g-head"><div class="g-eye"></div></div>
-                    <div class="g-body"></div>
+        <div id="scene-start" class="scene active">
+            <div class="overlay">
+                <div class="card">
+                    <h1>Day 1</h1>
+                    <p id="intro-text">Loading the magic...</p>
+                    <button id="start-btn" class="main-btn hidden">Enter the Garden</button>
                 </div>
             </div>
         </div>
 
-        <div id="ui">❤️ <span id="score">0</span>/5</div>
+        <div id="scene-game" class="scene hidden">
+            <div id="viewport">
+                <div id="world">
+                    <div class="sky-bg"></div>
+                    <div class="ground"></div>
 
-        <div id="popup" class="popup hidden">
-            <div class="popup-content"><p id="popup-text"></p></div>
-        </div>
+                    <div id="hearts-layer"></div>
 
-        <div class="controls">
-            <div class="move-btns">
-                <button id="btn-left" class="btn">◀</button>
-                <button id="btn-right" class="btn">▶</button>
+                    <div id="woodstock-container" class="hidden">
+                        <img src="Woodstock.png" id="woodstock-img">
+                        <div id="final-letter" class="hidden">✉️</div>
+                    </div>
+
+                    <img src="Snoopy_Peanuts.png" id="snoopy" class="char-img">
+
+                    <img src="Girl.png" id="girl" class="char-img">
+                </div>
             </div>
-            <button id="btn-jump" class="btn jump">JUMP</button>
+
+            <div id="ui">❤️ <span id="score">0</span>/5</div>
+
+            <div id="popup" class="popup hidden">
+                <div class="popup-content">
+                    <p id="popup-text"></p>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="dpad">
+                    <button id="left" class="btn">◀</button>
+                    <button id="right" class="btn">▶</button>
+                </div>
+                <button id="jump" class="btn jump-btn">JUMP</button>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
