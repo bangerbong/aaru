@@ -3,72 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Day 1 - The Journey Begins</title>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <title>Day 1 - A Sweet Start</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
-        <div id="scene-start" class="scene active bg-black">
+        <div id="scene-start" class="scene active bg-gradient">
             <div class="content-center">
-                <p id="start-text" class="typewriter-text"></p>
-                <button id="start-btn" class="pixel-btn hidden">Let's Go!</button>
+                <div class="intro-card">
+                    <p id="start-text" class="typewriter-text"></p>
+                    <button id="start-btn" class="main-btn hidden">Start Day 1</button>
+                </div>
             </div>
         </div>
 
         <div id="scene-game" class="scene hidden">
-            <div class="game-container" id="camera">
-                <div class="sky-bg">
-                    <div class="sun"></div>
-                    <div class="clouds">☁️ ☁️</div>
-                </div>
+            <div class="viewport" id="camera">
+                <div class="sky"><div class="sun-glow"></div></div>
                 
-                <div class="world-bounds" id="world">
-                    <div class="doghouse-static" style="left: 300px;">
-                        <div class="roof"></div><div class="base"></div>
+                <div class="world-floor" id="world">
+                    <div class="fence" style="left: 200px;"></div>
+                    <div class="fence" style="left: 600px;"></div>
+                    
+                    <div class="snoopy-house" style="left: 400px;">
+                        <div class="house-roof"></div>
+                        <div class="house-front"></div>
+                        <div class="house-hole"></div>
                     </div>
 
                     <div id="hearts-layer"></div>
 
-                    <div id="snoopy" class="character snoopy">
-                        <div class="s-head"><div class="s-ear"></div><div class="s-nose"></div></div>
-                        <div class="s-body"></div>
+                    <div id="snoopy" class="snoopy-char">
+                        <div class="s-nose"></div>
+                        <div class="s-head">
+                            <div class="s-eye"></div>
+                            <div class="s-ear"></div>
+                        </div>
+                        <div class="s-body">
+                            <div class="s-arm"></div>
+                            <div class="s-tail"></div>
+                        </div>
+                        <div class="s-feet"></div>
                     </div>
 
-                    <div id="girl" class="character girl">
-                        <div class="g-hair"></div>
-                        <div class="g-head"><div class="g-eyes"></div></div>
-                        <div class="g-body"></div>
+                    <div id="girl" class="toca-girl">
+                        <div class="t-hair"></div>
+                        <div class="t-head">
+                            <div class="t-eye"></div>
+                            <div class="t-blush"></div>
+                        </div>
+                        <div class="t-body"></div>
+                        <div class="t-feet"></div>
                     </div>
                 </div>
             </div>
 
-            <div id="heart-popup" class="hidden">
-                <div class="popup-content">
-                    <span id="popup-msg"></span>
+            <div id="game-ui">
+                <div class="heart-meter">❤️ <span id="score">0</span>/5</div>
+            </div>
+
+            <div id="msg-popup" class="popup hidden">
+                <div class="popup-box">
+                    <p id="popup-text"></p>
                 </div>
             </div>
 
-            <div id="ui">❤️ <span id="score">0</span>/5</div>
-
-            <div id="controls">
+            <div class="controls-overlay">
                 <div class="move-btns">
-                    <button class="c-btn" id="left">◀</button>
-                    <button class="c-btn" id="right">▶</button>
+                    <button id="left" class="btn-circle">◀</button>
+                    <button id="right" class="btn-circle">▶</button>
                 </div>
-                <button class="c-btn jump-btn" id="jump">JUMP</button>
+                <button id="jump" class="btn-jump">JUMP</button>
             </div>
         </div>
 
         <div id="scene-end" class="scene overlay hidden">
-            <div class="end-card">
-                <h2>Day 1 Complete!</h2>
-                <p id="final-msg" class="typewriter-text"></p>
-                <div class="calendar">
-                    <div class="day done">1</div>
-                    <div class="day locked">2</div>
-                    <div class="day locked">3</div>
-                </div>
+            <div class="end-box">
+                <div class="calendar-icon">📅 Day 1</div>
+                <h2>Done!</h2>
+                <p id="end-msg"></p>
+                <button onclick="location.reload()" class="main-btn">See you tomorrow</button>
             </div>
         </div>
     </div>
