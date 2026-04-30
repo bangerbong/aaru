@@ -1,7 +1,7 @@
 const CONFIG = {
     name: "Aaru", // Put her name here
     messages: {
-        intro: "Hi [NAME],|Snoopy is waiting for you...|Help him find 5 hearts|to unlock a secret.",
+        intro: "Hi Aaru,|Snoopy is waiting for you...|Help him find 5 hearts|to unlock a secret.",
         letter: "You found all my love!|Starting tomorrow...|the gate to Day 2|will open.|I love you."
     }
 };
