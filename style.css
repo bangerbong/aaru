@@ -1,65 +1,56 @@
 :root {
-    --girl-pink: #ff8fa3;
-    --toca-skin: #ffe0bd;
+    --sky: #a3d8f4;
+    --grass: #7aba61;
+    --outline: #222;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: 'Fredoka One', cursive; background: #000; overflow: hidden; }
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+body { font-family: 'Fredoka One', cursive; background: #222; overflow: hidden; }
 
-.camera {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden; /* This hides the character when they leave the view, so we must scroll it */
-    position: relative;
-}
+#game-container { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
 
-.world {
-    width: 5000px; /* Big enough to walk around */
-    height: 100%;
-    position: absolute;
-    background: #a3d8f4; /* Sky fallback */
-}
+#stage { width: 100%; height: 100%; position: relative; }
+#world { position: absolute; width: 5000px; height: 100%; bottom: 0; transition: transform 0.1s linear; }
 
-#bg-layer {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: url('background.png'); /* 👈 YOUR UPLOADED BG */
-    background-size: contain;
-    background-repeat: repeat-x;
-    background-position: bottom;
-}
+#sky { position: fixed; width: 100%; height: 100%; background: var(--sky); z-index: -1; }
+.ground { position: absolute; bottom: 0; width: 100%; height: 20%; background: var(--grass); border-top: 6px solid var(--outline); }
 
-/* Characters with hand-drawn outlines */
-.girl, .snoopy, .woodstock { 
-    position: absolute; 
-    bottom: 20%; 
-    z-index: 10; 
-    transition: transform 0.1s;
-}
+/* Snoopy House */
+.doghouse { position: absolute; bottom: 20%; left: 800px; width: 150px; height: 140px; }
+.roof { width: 180px; height: 30px; background: #e53935; border: 4px solid var(--outline); border-radius: 5px; margin-left: -15px; }
+.base { width: 150px; height: 110px; background: #e53935; border: 4px solid var(--outline); border-top: none; }
+.entrance { width: 50px; height: 60px; background: var(--outline); border-radius: 25px 25px 0 0; position: absolute; bottom: 0; left: 50px; }
 
-.girl { width: 60px; height: 100px; }
-.g-hair { width: 64px; height: 35px; background: #4e342e; border-radius: 20px 20px 0 0; border: 3px solid #000; }
-.g-head { width: 55px; height: 50px; background: var(--toca-skin); border: 3px solid #000; border-radius: 15px; margin-top: -5px; position: relative; }
-.g-eye { width: 6px; height: 6px; background: #000; border-radius: 50%; position: absolute; top: 20px; left: 10px; box-shadow: 25px 0 #000; }
-.g-body { width: 45px; height: 40px; background: var(--girl-pink); border: 3px solid #000; border-radius: 10px; margin-top: -5px; }
+/* Character Styling - Sticker Look */
+.char { position: absolute; bottom: 20%; transition: transform 0.1s; z-index: 10; }
 
-.snoopy { width: 40px; height: 40px; }
-.s-head { width: 32px; height: 24px; background: #fff; border: 3px solid #000; border-radius: 15px; position: relative; }
-.s-ear { width: 12px; height: 18px; background: #000; position: absolute; right: -2px; top: 4px; border-radius: 5px; }
-.s-body { width: 35px; height: 22px; background: #fff; border: 3px solid #000; border-radius: 10px; margin-top: -8px; }
+.girl { width: 60px; height: 110px; }
+.g-hair { width: 66px; height: 35px; background: #4e342e; border: 4px solid var(--outline); border-radius: 20px 20px 0 0; }
+.g-head { width: 58px; height: 50px; background: #ffe0bd; border: 4px solid var(--outline); border-radius: 15px; margin-top: -5px; position: relative; }
+.g-eye { width: 7px; height: 7px; background: var(--outline); border-radius: 50%; position: absolute; top: 22px; left: 12px; box-shadow: 26px 0 var(--outline); }
+.g-body { width: 50px; height: 45px; background: #ff85a1; border: 4px solid var(--outline); border-radius: 12px; margin-top: -5px; }
+
+.snoopy { width: 45px; height: 45px; }
+.s-head { width: 35px; height: 25px; background: #fff; border: 4px solid var(--outline); border-radius: 15px; position: relative; }
+.s-ear { width: 12px; height: 18px; background: var(--outline); position: absolute; right: -2px; top: 4px; border-radius: 5px; }
+.s-body { width: 38px; height: 24px; background: #fff; border: 4px solid var(--outline); border-radius: 10px; margin-top: -8px; }
 
 /* Woodstock */
-.woodstock { width: 25px; height: 20px; background: #ffec3d; border: 2px solid #000; border-radius: 50%; }
-.w-wing { width: 10px; height: 8px; border-bottom: 2px solid #000; position: absolute; right: -5px; top: 5px; animation: flap 0.1s infinite; }
-@keyframes flap { 50% { transform: rotate(30deg); } }
+.woodstock { position: absolute; width: 30px; height: 25px; z-index: 20; }
+.w-body { width: 25px; height: 20px; background: #ffec3d; border: 3px solid var(--outline); border-radius: 50%; }
+.letter { font-size: 30px; position: absolute; top: -40px; cursor: pointer; animation: bounce 1s infinite; }
 
-/* UI Fixes */
-#ui { position: fixed; top: 20px; left: 20px; font-size: 2rem; color: #fff; text-shadow: 2px 2px #000; z-index: 100; }
-.popup { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 500; }
-.popup-box { background: #fff; padding: 30px; border-radius: 20px; border: 5px solid #000; font-size: 1.5rem; text-align: center; }
+/* UI */
+#ui { position: fixed; top: 20px; left: 20px; background: #fff; padding: 10px 20px; border-radius: 50px; border: 4px solid var(--outline); font-size: 24px; }
+.popup { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.popup-content { background: #fff; padding: 30px; border: 5px solid var(--outline); border-radius: 20px; text-align: center; max-width: 80%; }
+.heart-item { position: absolute; font-size: 40px; animation: bounce 2s infinite; }
 
 /* Controls */
-.controls { position: fixed; bottom: 40px; width: 100%; display: flex; justify-content: space-between; padding: 0 30px; z-index: 1000; }
-.btn { width: 80px; height: 80px; background: #fff; border: 4px solid #000; border-radius: 50%; font-size: 2rem; }
-.jump-btn { width: 120px; border-radius: 20px; background: #ffec3d; }
+.controls { position: fixed; bottom: 30px; width: 100%; display: flex; justify-content: space-between; padding: 0 30px; }
+.btn { width: 80px; height: 80px; background: #fff; border: 4px solid var(--outline); border-radius: 50%; font-size: 24px; box-shadow: 0 6px 0 var(--outline); }
+.btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--outline); }
+.jump { width: 120px; border-radius: 20px; background: #ffec3d; }
+
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.hidden { display: none !important; }
