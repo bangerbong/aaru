@@ -1,64 +1,55 @@
 :root {
-    --sky: #a3d8f4;
-    --grass: #7cfc00;
-    --girl-pink: #ff8fa3;
+    --sky: #b3e5fc;
+    --grass: #91d18b;
+    --girl-dress: #ff85a1;
+    --toca-skin: #ffe0bd;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-body { font-family: 'VT323', monospace; background: #000; overflow: hidden; }
-#app { width: 100vw; height: 100vh; position: relative; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Fredoka One', cursive; background: #000; overflow: hidden; }
 
-.scene { position: absolute; inset: 0; opacity: 0; transition: 0.5s; pointer-events: none; }
-.scene.active { opacity: 1; pointer-events: auto; }
-.hidden { display: none !important; }
+/* Character Style Overhaul */
+.toca-girl { position: absolute; width: 60px; height: 100px; z-index: 100; transition: transform 0.1s; }
+.t-hair { width: 64px; height: 35px; background: #4e342e; border-radius: 30px 30px 5px 5px; position: absolute; top: -5px; left: -2px; z-index: 2; }
+.t-head { width: 55px; height: 50px; background: var(--toca-skin); border-radius: 20px; position: relative; z-index: 1; border-bottom: 3px solid #e0c2a2; }
+.t-eye { width: 7px; height: 7px; background: #333; border-radius: 50%; position: absolute; top: 25px; left: 12px; box-shadow: 25px 0 #333; }
+.t-blush { width: 10px; height: 5px; background: #ffb1af; border-radius: 50%; position: absolute; top: 35px; left: 6px; box-shadow: 33px 0 #ffb1af; }
+.t-body { width: 45px; height: 40px; background: var(--girl-dress); border-radius: 12px 12px 5px 5px; margin: -5px auto 0; }
+.t-feet { display: flex; justify-content: space-between; width: 35px; margin: 0 auto; height: 10px; background: var(--toca-skin); border-radius: 0 0 5px 5px; }
 
-/* Game Camera & World */
-.game-container { width: 100%; height: 100%; background: var(--sky); overflow: hidden; position: relative; }
-.world-bounds { width: 3000px; height: 100%; position: absolute; bottom: 0; background: linear-gradient(to bottom, transparent 80%, #55a630 80%); }
+/* Snoopy Design */
+.snoopy-char { position: absolute; width: 50px; height: 50px; z-index: 90; }
+.s-head { width: 35px; height: 25px; background: #fff; border-radius: 15px 20px 10px 15px; position: relative; border: 1px solid #ddd; }
+.s-ear { width: 12px; height: 20px; background: #000; position: absolute; right: 2px; top: 5px; border-radius: 5px; }
+.s-eye { width: 4px; height: 4px; background: #000; border-radius: 50%; position: absolute; top: 10px; left: 10px; }
+.s-nose { width: 8px; height: 6px; background: #000; position: absolute; left: -3px; top: 12px; border-radius: 50%; }
+.s-body { width: 30px; height: 25px; background: #fff; border-radius: 10px; margin-top: -5px; position: relative; border: 1px solid #ddd; }
+.s-tail { width: 10px; height: 5px; background: #fff; position: absolute; right: -5px; top: 10px; transform: rotate(30deg); border-radius: 5px; }
 
-.sky-bg { position: fixed; width: 100%; height: 100%; z-index: 0; }
-.sun { position: absolute; top: 40px; right: 80px; width: 60px; height: 60px; background: #fffde7; border-radius: 50%; box-shadow: 0 0 40px #fff; }
+/* World Decor */
+.viewport { width: 100vw; height: 100vh; background: var(--sky); overflow: hidden; position: relative; }
+.world-floor { width: 4000px; height: 100%; position: absolute; bottom: 0; background: linear-gradient(to bottom, transparent 80%, var(--grass) 80%); }
+.snoopy-house { position: absolute; bottom: 20%; width: 120px; height: 120px; }
+.house-roof { width: 140px; height: 25px; background: #ff5252; border-radius: 5px; margin-left: -10px; box-shadow: 0 5px #d32f2f; }
+.house-front { width: 120px; height: 100px; background: #ff5252; border: 4px solid #d32f2f; }
+.house-hole { width: 40px; height: 50px; background: #263238; border-radius: 20px 20px 0 0; position: absolute; bottom: 0; left: 40px; }
 
-/* Characters */
-.character { position: absolute; bottom: 20%; transition: transform 0.1s; z-index: 10; }
-
-/* The Girl */
-.girl { width: 50px; height: 80px; }
-.g-hair { width: 54px; height: 30px; background: #3d2b1f; border-radius: 15px 15px 0 0; }
-.g-head { width: 46px; height: 40px; background: #ffe0bd; border-radius: 10px; margin-top: -5px; position: relative; }
-.g-eyes { width: 6px; height: 6px; background: #000; border-radius: 50%; position: absolute; top: 20px; left: 8px; box-shadow: 24px 0 #000; }
-.g-body { width: 40px; height: 40px; background: var(--girl-pink); border-radius: 10px 10px 0 0; margin-top: -5px; }
-
-/* Snoopy */
-.snoopy { width: 40px; height: 40px; z-index: 9; }
-.s-head { width: 24px; height: 20px; background: #fff; border-radius: 10px; position: relative; }
-.s-ear { width: 10px; height: 15px; background: #000; position: absolute; right: -2px; top: 2px; border-radius: 5px; }
-.s-nose { width: 5px; height: 5px; background: #000; position: absolute; left: -2px; top: 8px; border-radius: 50%; }
-.s-body { width: 30px; height: 18px; background: #fff; border-radius: 10px; margin-top: -5px; }
-
-/* Doghouse */
-.doghouse-static .roof { width: 100px; height: 20px; background: #d32f2f; border-radius: 5px; }
-.doghouse-static .base { width: 80px; height: 60px; background: #d32f2f; margin: 0 auto; border: 3px solid #b71c1c; }
-
-/* Hearts */
-.collectible { position: absolute; font-size: 2.5rem; animation: bounce 2s infinite; }
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-
-/* UI */
-#ui { position: fixed; top: 20px; left: 20px; font-size: 2.5rem; color: #ff4d6d; text-shadow: 2px 2px #fff; z-index: 100; }
-#heart-popup { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 500; background: rgba(0,0,0,0.3); }
-.popup-content { background: white; padding: 20px 40px; border-radius: 20px; font-size: 1.8rem; border: 4px solid var(--girl-pink); animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-@keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+/* Popups & UI */
+#game-ui { position: fixed; top: 20px; left: 20px; font-size: 2rem; z-index: 1000; background: white; padding: 10px 20px; border-radius: 50px; border: 4px solid var(--girl-dress); }
+.popup { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+.popup-box { background: white; padding: 30px; border-radius: 25px; text-align: center; border: 6px solid var(--girl-dress); animation: popScale 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
+@keyframes popScale { from { transform: scale(0); } to { transform: scale(1); } }
 
 /* Controls */
-#controls { position: fixed; bottom: 30px; width: 100%; display: flex; justify-content: space-between; padding: 0 40px; z-index: 1000; }
-.c-btn { width: 80px; height: 80px; background: rgba(255,255,255,0.6); border: 4px solid #fff; border-radius: 20px; font-size: 2rem; font-family: 'VT323'; }
-.jump-btn { width: 120px; background: #fffa; }
+.controls-overlay { position: fixed; bottom: 30px; width: 100%; padding: 0 30px; display: flex; justify-content: space-between; z-index: 5000; }
+.btn-circle { width: 80px; height: 80px; background: white; border: 4px solid #333; border-radius: 50%; font-size: 1.5rem; box-shadow: 0 6px #ddd; }
+.btn-circle:active { transform: translateY(4px); box-shadow: none; }
+.btn-jump { width: 120px; height: 80px; background: var(--girl-dress); color: white; border: 4px solid #333; border-radius: 20px; font-family: 'Fredoka One'; font-size: 1.2rem; box-shadow: 0 6px #a04359; }
 
-/* End Screen */
-.overlay { background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 2000; }
-.end-card { background: white; padding: 40px; border-radius: 30px; text-align: center; color: #333; }
-.calendar { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
-.day { width: 50px; height: 50px; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: bold; }
-.day.done { background: var(--girl-pink); color: white; border-color: var(--girl-pink); }
-.day.locked { background: #eee; color: #999; }
+/* General Scenes */
+.scene { position: absolute; inset: 0; opacity: 0; transition: 0.5s; pointer-events: none; }
+.scene.active { opacity: 1; pointer-events: auto; }
+.bg-gradient { background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); }
+.content-center { height: 100%; display: flex; align-items: center; justify-content: center; }
+.intro-card { background: white; padding: 40px; border-radius: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.main-btn { padding: 15px 40px; font-family: 'Fredoka One'; font-size: 1.5rem; background: var(--girl-dress); color: white; border: none; border-radius: 50px; cursor: pointer; }
