@@ -1,27 +1,54 @@
-let gX = 200, gY = 0, vY = 0, score = 0;
-let worldX = 0, active = true, isJump = false;
-let keys = {};
+let gX = 300, gY = 0, vY = 0, score = 0;
+let keys = {}, active = false, isJump = false;
 
-const msgs = ["You're amazing! ❤️", "Snoopy loves you! 🐾", "Almost done! ✨", "Keep going! 💖", "Day 1 Complete! Click the letter! ✉️"];
+const msgs = [
+    "First heart found! ❤️",
+    "You're doing amazing! 🐾",
+    "Snoopy is so happy! ✨",
+    "Almost there, my love! 🎁",
+    "Day 1 Complete! See what Woodstock has... 💖"
+];
 
-// Mobile Controls
+// Start Screen Typing
+window.onload = () => {
+    const text = "Welcome to Day 1.|Collect 5 hearts to unlock|a special message...";
+    let i = 0;
+    const interval = setInterval(() => {
+        document.getElementById('intro-text').innerHTML += text[i] === "|" ? "<br>" : text[i];
+        i++;
+        if(i >= text.length) {
+            clearInterval(interval);
+            document.getElementById('start-btn').classList.remove('hidden');
+        }
+    }, 50);
+};
+
+document.getElementById('start-btn').onclick = () => {
+    document.getElementById('scene-start').classList.add('hidden');
+    document.getElementById('scene-game').classList.remove('hidden');
+    active = true;
+    spawnHearts();
+    update();
+};
+
+// Input Handling
 const bind = (id, k) => {
     const el = document.getElementById(id);
     el.ontouchstart = (e) => { e.preventDefault(); keys[k] = true; };
     el.ontouchend = (e) => { e.preventDefault(); keys[k] = false; };
 };
-bind('btn-left', 'ArrowLeft'); bind('btn-right', 'ArrowRight');
-document.getElementById('btn-jump').ontouchstart = (e) => {
-    e.preventDefault(); if(!isJump) { vY = 25; isJump = true; }
+bind('left', 'ArrowLeft'); bind('right', 'ArrowRight');
+document.getElementById('jump').ontouchstart = (e) => {
+    e.preventDefault(); if(!isJump) { vY = 24; isJump = true; }
 };
 
 function spawnHearts() {
     const layer = document.getElementById('hearts-layer');
     for(let i=0; i<5; i++) {
         const h = document.createElement('div');
-        h.innerHTML = '❤️'; h.className = 'heart-item';
+        h.innerHTML = '❤️'; h.className = 'heart-pickup';
         h.style.left = (1200 + (i * 700)) + 'px';
-        h.style.bottom = '30%';
+        h.style.bottom = (25 + Math.random()*10) + '%';
         layer.appendChild(h);
     }
 }
@@ -29,24 +56,29 @@ function spawnHearts() {
 function update() {
     if(!active) return;
 
-    if(keys['ArrowLeft'] && gX > 100) { gX -= 12; document.getElementById('girl').style.transform = 'scaleX(-1)'; }
-    if(keys['ArrowRight'] && gX < 4800) { gX += 12; document.getElementById('girl').style.transform = 'scaleX(1)'; }
+    // Move Girl
+    if(keys['ArrowLeft'] && gX > 150) { gX -= 11; document.getElementById('girl').style.transform = "scaleX(-1)"; }
+    if(keys['ArrowRight'] && gX < 4800) { gX += 11; document.getElementById('girl').style.transform = "scaleX(1)"; }
 
+    // Gravity
     gY += vY;
-    if(gY > 0) vY -= 1.5; else { gY = 0; vY = 0; isJump = false; }
+    if(gY > 0) vY -= 1.4; else { gY = 0; vY = 0; isJump = false; }
 
     const girl = document.getElementById('girl');
     girl.style.left = gX + 'px';
-    girl.style.bottom = (20 + (gY / 10)) + '%';
+    girl.style.bottom = (18 + (gY / 10)) + '%';
 
+    // Snoopy Follows
     const snoopy = document.getElementById('snoopy');
-    snoopy.style.left = (gX - 80) + 'px';
-    snoopy.style.bottom = (20 + (gY / 10)) + '%';
+    snoopy.style.left = (gX - 90) + 'px';
+    snoopy.style.bottom = (18 + (gY / 10)) + '%';
+    snoopy.style.transform = girl.style.transform;
 
-    // CAMERA LOGIC: Move the world container to keep girl centered
-    worldX = -(gX - (window.innerWidth / 2));
-    if(worldX > 0) worldX = 0;
-    document.getElementById('world').style.transform = `translateX(${worldX}px)`;
+    // 🌟 CAMERA LOCK 🌟
+    const world = document.getElementById('world');
+    let camX = -(gX - window.innerWidth / 2);
+    if(camX > 0) camX = 0; // Don't scroll past start
+    world.style.transform = `translateX(${camX}px)`;
 
     checkCollisions();
     requestAnimationFrame(update);
@@ -54,11 +86,11 @@ function update() {
 
 function checkCollisions() {
     const gRect = document.getElementById('girl').getBoundingClientRect();
-    document.querySelectorAll('.heart-item').forEach(h => {
+    document.querySelectorAll('.heart-pickup').forEach(h => {
         const hRect = h.getBoundingClientRect();
-        if(Math.abs(gRect.left - hRect.left) < 60 && Math.abs(gRect.top - hRect.top) < 80) {
+        if(Math.abs(gRect.left - hRect.left) < 60 && Math.abs(gRect.top - hRect.top) < 100) {
             h.remove();
-            showPopup(msgs[score]);
+            popup(msgs[score]);
             score++;
             document.getElementById('score').innerText = score;
             if(score === 5) handleEnd();
@@ -66,7 +98,7 @@ function checkCollisions() {
     });
 }
 
-function showPopup(txt) {
+function popup(txt) {
     active = false;
     const p = document.getElementById('popup');
     document.getElementById('popup-text').innerText = txt;
@@ -76,26 +108,23 @@ function showPopup(txt) {
 
 function handleEnd() {
     active = false;
-    const w = document.getElementById('woodstock');
-    const l = document.getElementById('letter');
-    w.classList.remove('hidden');
-    w.style.left = (gX + 100) + 'px';
-    w.style.bottom = '80%';
-    
-    let flyY = 80;
-    const timer = setInterval(() => {
-        flyY -= 1.5;
-        w.style.bottom = flyY + '%';
-        if(flyY <= 35) {
-            clearInterval(timer);
-            l.classList.remove('hidden');
-            l.onclick = () => {
-                alert("Day 1 officially finished! I love you!");
+    const wc = document.getElementById('woodstock-container');
+    const letter = document.getElementById('final-letter');
+    wc.classList.remove('hidden');
+    wc.style.left = (gX + 120) + 'px';
+    wc.style.bottom = '80%';
+
+    let wY = 80;
+    const slide = setInterval(() => {
+        wY -= 1.5;
+        wc.style.bottom = wY + '%';
+        if(wY <= 30) {
+            clearInterval(slide);
+            letter.classList.remove('hidden');
+            letter.onclick = () => {
+                alert("Day 1 Complete! I love you so much. See you tomorrow for Day 2! 💖");
                 location.reload();
             };
         }
     }, 30);
 }
-
-spawnHearts();
-update();
