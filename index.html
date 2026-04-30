@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Day 1 - A New Adventure</title>
+    <title>Day 1 - The Adventure Begins</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -12,57 +12,66 @@
         <div id="scene-start" class="scene active bg-black">
             <div class="content-center">
                 <p id="start-text" class="typewriter-text"></p>
-                <button id="start-btn" class="pixel-btn hidden">Enter World</button>
+                <button id="start-btn" class="pixel-btn hidden">Enter Garden</button>
             </div>
         </div>
 
         <div id="scene-game" class="scene hidden">
-            <div class="world-container">
-                <div class="sky-bg">
+            <div class="world">
+                <div class="sky-layer">
                     <div class="sun"></div>
+                    <div class="clouds"></div>
                 </div>
                 
-                <div class="play-area" id="play-area">
-                    <div id="heart-count">❤️ 0/5</div>
-                    
-                    <div id="dog" class="character dog">
-                        <div class="d-head"><div class="d-ear"></div><div class="d-nose"></div></div>
-                        <div class="d-body"></div>
-                        <div class="d-legs"><div class="d-leg"></div><div class="d-leg"></div></div>
+                <div class="play-surface" id="play-surface">
+                    <div class="gate-area">
+                        <div class="signpost">Day 2</div>
+                        <div class="gate">🔒</div>
                     </div>
 
+                    <div class="doghouse">
+                        <div class="house-roof"></div>
+                        <div class="house-body"></div>
+                        <div class="house-door"></div>
+                        <div id="dog" class="character dog-on-roof">
+                            <div class="d-head"><div class="d-ear-floppy"></div><div class="d-nose"></div></div>
+                            <div class="d-body"></div>
+                        </div>
+                    </div>
+
+                    <div id="bubble" class="speech-bubble hidden">Find 5 ❤️!</div>
+
                     <div id="girl" class="character girl">
+                        <div class="shadow"></div>
                         <div class="g-hair"></div>
-                        <div class="g-head"><div class="g-blush"></div><div class="g-eyes"></div></div>
+                        <div class="g-head"><div class="g-eyes"></div><div class="g-blush"></div></div>
                         <div class="g-body"></div>
                         <div class="g-legs"><div class="g-leg"></div><div class="g-leg"></div></div>
+                    </div>
+                    
+                    <div id="ui-bar">
+                        <span id="heart-counter">❤️ 0/5</span>
                     </div>
                 </div>
             </div>
 
-            <div id="mobile-controls">
-                <div class="d-pad">
-                    <button id="btn-up" class="ctrl-btn">▲</button>
-                    <div class="mid-row">
-                        <button id="btn-left" class="ctrl-btn">◀</button>
-                        <button id="btn-right" class="ctrl-btn">▶</button>
+            <div id="controls">
+                <div class="dpad">
+                    <button class="c-btn" id="up">▲</button>
+                    <div class="dpad-mid">
+                        <button class="c-btn" id="left">◀</button>
+                        <button class="c-btn" id="right">▶</button>
                     </div>
-                    <button id="btn-down" class="ctrl-btn">▼</button>
+                    <button class="c-btn" id="down">▼</button>
                 </div>
             </div>
         </div>
 
         <div id="scene-letter" class="scene overlay hidden">
-            <div class="letter-box">
-                <div class="envelope-icon">💌</div>
-                <p id="letter-text" class="typewriter-text text-dark"></p>
-                <button id="close-btn" class="pixel-btn hidden">See you tomorrow</button>
-            </div>
-        </div>
-
-        <div id="scene-end" class="scene hidden bg-black">
-            <div class="content-center">
-                <p class="typewriter-text">Day 2 is locked.<br>Come back tomorrow.</p>
+            <div class="letter-card">
+                <div class="stamp">💌</div>
+                <p id="letter-content" class="typewriter-text text-dark"></p>
+                <button id="next-day-btn" class="pixel-btn hidden">See you tomorrow</button>
             </div>
         </div>
     </div>
