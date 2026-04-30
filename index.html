@@ -3,54 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Day 1 - Peanuts Adventure</title>
+    <title>Day 1 - The Peanuts Journey</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
-        <div id="scene-game" class="scene active">
-            <div class="camera" id="camera">
-                <div class="world" id="world">
-                    <div id="bg-layer"></div>
-                    
-                    <div class="doghouse" style="left: 600px;">
-                        <div class="roof"></div>
-                        <div class="base"></div>
-                    </div>
+    <div id="game-container">
+        <div id="stage">
+            <div id="sky"></div>
+            <div id="world">
+                <div class="ground"></div>
+                
+                <div class="doghouse">
+                    <div class="roof"></div>
+                    <div class="base"></div>
+                    <div class="entrance"></div>
+                </div>
 
-                    <div id="hearts-layer"></div>
+                <div id="hearts-layer"></div>
 
-                    <div id="woodstock" class="woodstock hidden">
-                        <div class="w-wing"></div>
-                    </div>
+                <div id="woodstock" class="woodstock hidden">
+                    <div class="w-body"></div>
+                    <div id="letter" class="letter hidden">✉️</div>
+                </div>
 
-                    <div id="snoopy" class="snoopy">
-                        <div class="s-head"><div class="s-ear"></div></div>
-                        <div class="s-body"></div>
-                    </div>
+                <div id="snoopy" class="char snoopy">
+                    <div class="s-head"><div class="s-ear"></div></div>
+                    <div class="s-body"></div>
+                </div>
 
-                    <div id="girl" class="girl">
-                        <div class="g-hair"></div>
-                        <div class="g-head"><div class="g-eye"></div></div>
-                        <div class="g-body"></div>
-                    </div>
+                <div id="girl" class="char girl">
+                    <div class="g-hair"></div>
+                    <div class="g-head"><div class="g-eye"></div></div>
+                    <div class="g-body"></div>
                 </div>
             </div>
+        </div>
 
-            <div id="ui">❤️ <span id="score">0</span>/5</div>
+        <div id="ui">❤️ <span id="score">0</span>/5</div>
 
-            <div id="msg-popup" class="popup hidden">
-                <div class="popup-box"><p id="popup-text"></p></div>
+        <div id="popup" class="popup hidden">
+            <div class="popup-content"><p id="popup-text"></p></div>
+        </div>
+
+        <div class="controls">
+            <div class="move-btns">
+                <button id="btn-left" class="btn">◀</button>
+                <button id="btn-right" class="btn">▶</button>
             </div>
-
-            <div class="controls">
-                <div class="move-group">
-                    <button id="left" class="btn">◀</button>
-                    <button id="right" class="btn">▶</button>
-                </div>
-                <button id="jump" class="btn jump-btn">JUMP</button>
-            </div>
+            <button id="btn-jump" class="btn jump">JUMP</button>
         </div>
     </div>
     <script src="script.js"></script>
