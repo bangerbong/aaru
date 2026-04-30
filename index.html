@@ -3,33 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Day 1 - Peanuts Adventure</title>
+    <title>Day 1 - A Peanuts Story</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="game-container">
         <div id="scene-start" class="scene active">
-            <div class="card">
+            <div class="intro-card">
                 <h1>Day 1</h1>
                 <p id="typewriter"></p>
-                <button id="start-btn" class="hidden">Enter Garden</button>
+                <button id="start-btn" class="hidden">Enter the Garden</button>
             </div>
         </div>
 
         <div id="scene-game" class="scene hidden">
-            <div id="camera">
+            <div id="viewport">
                 <div id="world">
                     <div class="sky-bg"></div>
                     
-                    <img src="Snoopyhouse.png" class="prop house" style="left: 600px;">
+                    <img src="Snoopyhouse.png" class="prop house" style="left: 700px;">
 
                     <div id="obstacles-layer"></div>
                     <div id="hearts-layer"></div>
 
-                    <div id="woodstock-final" class="hidden">
-                        <img src="Woodstock.png" class="w-img">
-                        <div id="letter-click">✉️</div>
+                    <div id="woodstock-container" class="hidden">
+                        <img src="Woodstock.png" class="woodstock-fly">
+                        <div id="final-letter">✉️</div>
                     </div>
 
                     <img src="Snoopy_Peanuts.png" id="snoopy" class="sprite">
@@ -42,11 +42,11 @@
             <div id="popup" class="hidden"><p id="popup-text"></p></div>
 
             <div class="controls">
-                <div class="d-pad">
-                    <button id="btn-left" class="ctrl">◀</button>
-                    <button id="btn-right" class="ctrl">▶</button>
+                <div class="dpad">
+                    <button id="left" class="btn">◀</button>
+                    <button id="right" class="btn">▶</button>
                 </div>
-                <button id="btn-jump" class="ctrl jump">JUMP</button>
+                <button id="jump" class="btn jump-btn">JUMP</button>
             </div>
         </div>
     </div>
