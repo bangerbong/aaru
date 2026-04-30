@@ -1,124 +1,96 @@
-const CONFIG = {
-    heartMsgs: [
-        "A little heart for a big love! ❤️",
-        "Snoopy says you're doing great! 🐾",
-        "Each heart brings us closer! 🎁",
-        "I'm so lucky you're my person. ✨",
-        "Day 1 Complete! Look who's here... 💖"
-    ]
-};
+const msgs = ["First heart! ❤️", "Snoopy is proud! 🐾", "Almost there! 🎁", "So close! ✨", "Day 1 Done! 💖"];
+let gX = 200, gY = 0, sX = 100, vY = 0, score = 0;
+let keys = {}, active = true, isJump = false;
 
-let gX = 150, gY = 0, sX = 80, vY = 0;
-let keys = {}, active = false, score = 0, jump = false;
-
-function type(text, id, cb) {
-    const el = document.getElementById(id);
-    el.innerHTML = ""; let i = 0;
-    const itv = setInterval(() => {
-        if(i < text.length) { el.innerHTML += text[i] === "|" ? "<br>" : text[i]; i++; }
-        else { clearInterval(itv); if(cb) cb(); }
-    }, 45);
-}
-
-window.onload = () => {
-    type("Welcome to our world!|Help Snoopy find the hearts|to unlock Day 2.", "start-text", () => {
-        document.getElementById('start-btn').classList.remove('hidden');
-    });
-};
-
-document.getElementById('start-btn').onclick = () => {
-    document.getElementById('scene-start').classList.remove('active');
-    document.getElementById('scene-game').classList.remove('hidden');
-    setTimeout(() => { document.getElementById('scene-game').classList.add('active'); active = true; spawn(); loop(); }, 50);
-};
-
-// Input
-const b = (id, k) => {
+// Movement Bindings
+const bind = (id, k) => {
     const el = document.getElementById(id);
     el.ontouchstart = (e) => { e.preventDefault(); keys[k] = true; };
     el.ontouchend = (e) => { e.preventDefault(); keys[k] = false; };
 };
-b('left', 'ArrowLeft'); b('right', 'ArrowRight');
+bind('left', 'ArrowLeft'); bind('right', 'ArrowRight');
 document.getElementById('jump').ontouchstart = (e) => {
-    e.preventDefault(); if(!jump) { vY = 22; jump = true; }
+    e.preventDefault(); if(!isJump) { vY = 25; isJump = true; }
 };
 
 function spawn() {
     const layer = document.getElementById('hearts-layer');
     for(let i=0; i<5; i++) {
         const h = document.createElement('div');
-        h.className = 'heart'; h.innerHTML = '❤️';
-        h.style.left = (800 + (i*500)) + "px";
-        h.style.bottom = (25 + Math.random()*15) + "%";
+        h.innerHTML = '❤️'; h.className = 'heart';
+        h.style.position = 'absolute'; h.style.fontSize = '3rem';
+        h.style.left = (800 + (i * 600)) + 'px';
+        h.style.bottom = '30%';
         layer.appendChild(h);
     }
 }
 
-function loop() {
+function gameLoop() {
     if(!active) return;
-    if(keys['ArrowLeft'] && gX > 50) { gX -= 8; document.getElementById('girl').style.transform="scaleX(-1)"; }
-    if(keys['ArrowRight'] && gX < 2900) { gX += 8; document.getElementById('girl').style.transform="scaleX(1)"; }
 
+    // Movement
+    if(keys['ArrowLeft'] && gX > 100) { gX -= 10; document.getElementById('girl').style.transform = 'scaleX(-1)'; }
+    if(keys['ArrowRight'] && gX < 4800) { gX += 10; document.getElementById('girl').style.transform = 'scaleX(1)'; }
+
+    // Physics
     gY += vY;
-    if(gY > 0) vY -= 1.3;
-    else { gY = 0; vY = 0; jump = false; }
+    if(gY > 0) vY -= 1.5; else { gY = 0; vY = 0; isJump = false; }
 
-    sX += ( (gX - (document.getElementById('girl').style.transform==="scaleX(-1)"?-70:70)) - sX ) * 0.12;
+    // Snoopy Lag Follow
+    sX += ( (gX - (document.getElementById('girl').style.transform === 'scaleX(-1)' ? -80 : 80)) - sX ) * 0.1;
 
-    const gEl = document.getElementById('girl');
-    const sEl = document.getElementById('snoopy');
-    gEl.style.left = gX + "px"; gEl.style.bottom = (20 + (gY/10)) + "%";
-    sEl.style.left = sX + "px"; sEl.style.bottom = (20 + (gY/10)) + "%";
-    sEl.style.transform = gEl.style.transform;
+    // Apply positions
+    const girl = document.getElementById('girl');
+    girl.style.left = gX + 'px';
+    girl.style.bottom = (20 + (gY / 10)) + '%';
+    
+    const snoopy = document.getElementById('snoopy');
+    snoopy.style.left = sX + 'px';
+    snoopy.style.bottom = (20 + (gY / 10)) + '%';
+    snoopy.style.transform = girl.style.transform;
 
-    document.getElementById('camera').scrollLeft = gX - window.innerWidth/2;
-    check();
-    requestAnimationFrame(loop);
+    // 🌟 CAMERA FOLLOW FIX 🌟
+    const camera = document.getElementById('camera');
+    // We scroll the camera so the girl stays in the center
+    camera.scrollLeft = gX - (window.innerWidth / 2);
+
+    checkCollisions();
+    requestAnimationFrame(gameLoop);
 }
 
-function check() {
+function checkCollisions() {
     const gRect = document.getElementById('girl').getBoundingClientRect();
     document.querySelectorAll('.heart').forEach(h => {
         const hRect = h.getBoundingClientRect();
-        if(Math.abs(gRect.left - hRect.left) < 50 && Math.abs(gRect.top - hRect.top) < 70) {
+        if(Math.abs(gRect.left - hRect.left) < 60 && Math.abs(gRect.top - hRect.top) < 80) {
             h.remove();
-            popup(CONFIG.heartMsgs[score]);
+            showPopup(msgs[score]);
             score++;
             document.getElementById('score').innerText = score;
-            if(score === 5) startWoodstock();
+            if(score === 5) { active = false; woodstockEnd(); }
         }
     });
 }
 
-function popup(msg) {
+function showPopup(txt) {
     active = false;
     const p = document.getElementById('msg-popup');
-    document.getElementById('popup-text').innerText = msg;
+    document.getElementById('popup-text').innerText = txt;
     p.classList.remove('hidden');
-    setTimeout(() => { p.classList.add('hidden'); active = true; loop(); }, 2000);
+    setTimeout(() => { p.classList.add('hidden'); active = true; gameLoop(); }, 2000);
 }
 
-function startWoodstock() {
-    active = false;
+function woodstockEnd() {
     const w = document.getElementById('woodstock');
     w.classList.remove('hidden');
-    w.style.left = (gX + 200) + "px";
-    w.style.bottom = "80%";
-    
-    // Woodstock flies down to deliver letter
+    w.style.left = (gX + 150) + 'px';
+    w.style.bottom = '80%';
     let wY = 80;
-    const flyDown = setInterval(() => {
-        wY -= 2;
-        w.style.bottom = wY + "%";
-        if(wY <= 30) {
-            clearInterval(flyDown);
-            setTimeout(finish, 1000);
-        }
-    }, 30);
+    const fall = setInterval(() => {
+        wY -= 2; w.style.bottom = wY + '%';
+        if(wY <= 25) { clearInterval(fall); alert("Day 1 Complete! Woodstock delivered the letter."); }
+    }, 50);
 }
 
-function finish() {
-    document.getElementById('scene-end').classList.remove('hidden');
-    document.getElementById('scene-end').classList.add('active');
-    type("You finished Day 1! Woodstock brought the mail.|Day 2: The Psychiatrist Booth unlocks in 24 hours.", "end-msg");
-}
+spawn();
+gameLoop();
