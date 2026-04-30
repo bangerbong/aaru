@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Day 1 - The Adventure Begins</title>
+    <title>Day 1 - The Journey Begins</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -12,66 +12,63 @@
         <div id="scene-start" class="scene active bg-black">
             <div class="content-center">
                 <p id="start-text" class="typewriter-text"></p>
-                <button id="start-btn" class="pixel-btn hidden">Enter Garden</button>
+                <button id="start-btn" class="pixel-btn hidden">Let's Go!</button>
             </div>
         </div>
 
         <div id="scene-game" class="scene hidden">
-            <div class="world">
-                <div class="sky-layer">
+            <div class="game-container" id="camera">
+                <div class="sky-bg">
                     <div class="sun"></div>
-                    <div class="clouds"></div>
+                    <div class="clouds">☁️ ☁️</div>
                 </div>
                 
-                <div class="play-surface" id="play-surface">
-                    <div class="gate-area">
-                        <div class="signpost">Day 2</div>
-                        <div class="gate">🔒</div>
+                <div class="world-bounds" id="world">
+                    <div class="doghouse-static" style="left: 300px;">
+                        <div class="roof"></div><div class="base"></div>
                     </div>
 
-                    <div class="doghouse">
-                        <div class="house-roof"></div>
-                        <div class="house-body"></div>
-                        <div class="house-door"></div>
-                        <div id="dog" class="character dog-on-roof">
-                            <div class="d-head"><div class="d-ear-floppy"></div><div class="d-nose"></div></div>
-                            <div class="d-body"></div>
-                        </div>
-                    </div>
+                    <div id="hearts-layer"></div>
 
-                    <div id="bubble" class="speech-bubble hidden">Find 5 ❤️!</div>
+                    <div id="snoopy" class="character snoopy">
+                        <div class="s-head"><div class="s-ear"></div><div class="s-nose"></div></div>
+                        <div class="s-body"></div>
+                    </div>
 
                     <div id="girl" class="character girl">
-                        <div class="shadow"></div>
                         <div class="g-hair"></div>
-                        <div class="g-head"><div class="g-eyes"></div><div class="g-blush"></div></div>
+                        <div class="g-head"><div class="g-eyes"></div></div>
                         <div class="g-body"></div>
-                        <div class="g-legs"><div class="g-leg"></div><div class="g-leg"></div></div>
-                    </div>
-                    
-                    <div id="ui-bar">
-                        <span id="heart-counter">❤️ 0/5</span>
                     </div>
                 </div>
             </div>
 
-            <div id="controls">
-                <div class="dpad">
-                    <button class="c-btn" id="up">▲</button>
-                    <div class="dpad-mid">
-                        <button class="c-btn" id="left">◀</button>
-                        <button class="c-btn" id="right">▶</button>
-                    </div>
-                    <button class="c-btn" id="down">▼</button>
+            <div id="heart-popup" class="hidden">
+                <div class="popup-content">
+                    <span id="popup-msg"></span>
                 </div>
+            </div>
+
+            <div id="ui">❤️ <span id="score">0</span>/5</div>
+
+            <div id="controls">
+                <div class="move-btns">
+                    <button class="c-btn" id="left">◀</button>
+                    <button class="c-btn" id="right">▶</button>
+                </div>
+                <button class="c-btn jump-btn" id="jump">JUMP</button>
             </div>
         </div>
 
-        <div id="scene-letter" class="scene overlay hidden">
-            <div class="letter-card">
-                <div class="stamp">💌</div>
-                <p id="letter-content" class="typewriter-text text-dark"></p>
-                <button id="next-day-btn" class="pixel-btn hidden">See you tomorrow</button>
+        <div id="scene-end" class="scene overlay hidden">
+            <div class="end-card">
+                <h2>Day 1 Complete!</h2>
+                <p id="final-msg" class="typewriter-text"></p>
+                <div class="calendar">
+                    <div class="day done">1</div>
+                    <div class="day locked">2</div>
+                    <div class="day locked">3</div>
+                </div>
             </div>
         </div>
     </div>
