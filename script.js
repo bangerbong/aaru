@@ -5,13 +5,13 @@ const messages = [
     "First heart! I love you! ❤️",
     "Snoopy thinks you're great! 🐾",
     "Keep going, sunshine! ✨",
-    "Almost at the end! 🎁",
+    "Im so lucky you're my person.",
     "All hearts found! Click Woodstock's letter! ✉️"
 ];
 
 // Typewriter Intro
 window.onload = () => {
-    let i = 0; const txt = "Hi Beautiful! Welcome to Day 1.|Collect 5 hearts to unlock|your special surprise...";
+    let i = 0; const txt = "Hi Aaru! Welcome to Day 1.|Collect 5 hearts to unlock|your special surprise...";
     const timer = setInterval(() => {
         document.getElementById('typewriter').innerHTML += txt[i] === "|" ? "<br>" : txt[i];
         i++; if(i >= txt.length) { clearInterval(timer); document.getElementById('start-btn').classList.remove('hidden'); }
@@ -121,7 +121,7 @@ function win() {
     wood.style.bottom = "25%";
     
     document.getElementById('final-letter').onclick = () => {
-        alert("Day 1 Final Letter: I'm so lucky to have you. I hope you enjoyed this little journey. See you tomorrow for Day 2! ❤️");
+        alert("Day 1 Final Letter: I'm so lucky to have you. MY BABYS BIRTHDAY MONTH OMG BIRTHAY PANCHO I'm sorry Ik im not perfect but im so grateful for you I hope you enjoyed this little journey. See you tomorrow for Day 2! ❤️");
         location.reload();
     };
 }
