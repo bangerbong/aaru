@@ -1,123 +1,160 @@
 const CONFIG = {
-    name: "Aaru", // Put her name here
-    messages: {
-        intro: "Hi Aaru,|Snoopy is waiting for you...|Help him find 5 hearts|to unlock a secret.",
-        letter: "You found all my love!|Starting tomorrow...|the gate to Day 2|will open.|I love you."
-    }
+    name: "Aaru",
+    heartMessages: [
+        "You are so pretty!",
+        "Snoopy thinks you're the best!",
+        "I'm so glad we're on this adventure.",
+        "You're doing great, keep going!",
+        "You found them all! I love you."
+    ]
 };
 
-let hearts = 0;
-let girlPos = { x: 20, y: 60 };
-let keys = {};
-let active = false;
+let girlX = 100;
+let girlY = 0;
+let snoopyX = 50;
+let velY = 0;
+let isJumping = false;
+let score = 0;
+let gameActive = false;
+const keys = {};
 
-// Helpers
-const show = (id) => {
-    document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
-    const next = document.getElementById(id);
-    next.classList.remove('hidden');
-    setTimeout(() => next.classList.add('active'), 50);
-};
+const world = document.getElementById('world');
+const camera = document.getElementById('camera');
+const girl = document.getElementById('girl');
+const snoopy = document.getElementById('snoopy');
 
-const type = (text, id, callback) => {
-    const el = document.getElementById(id);
-    el.innerHTML = "";
-    let i = 0;
-    const msg = text.replace("[NAME]", CONFIG.name);
-    const timer = setInterval(() => {
-        if(i < msg.length) {
-            el.innerHTML += msg[i] === "|" ? "<br>" : msg[i];
-            i++;
-        } else {
-            clearInterval(timer);
-            if(callback) callback();
-        }
-    }, 50);
-};
-
-// Start
+// Initialization
 window.onload = () => {
-    type(CONFIG.messages.intro, "start-text", () => {
+    const introMsg = `Hi ${CONFIG.name},|I made a world for us.|Use the buttons to explore.|Snoopy will follow you!`;
+    typeWriter(introMsg, "start-text", () => {
         document.getElementById('start-btn').classList.remove('hidden');
     });
 };
 
 document.getElementById('start-btn').onclick = () => {
-    show('scene-game');
-    active = true;
-    spawnHearts();
-    gameLoop();
+    document.getElementById('scene-start').classList.remove('active');
+    document.getElementById('scene-game').classList.remove('hidden');
+    setTimeout(() => {
+        document.getElementById('scene-game').classList.add('active');
+        gameActive = true;
+        spawnHearts();
+        loop();
+    }, 50);
 };
 
-// Input
-window.onkeydown = (e) => keys[e.key] = true;
-window.onkeyup = (e) => keys[e.key] = false;
-
-const bind = (id, key) => {
-    const b = document.getElementById(id);
-    b.ontouchstart = (e) => { e.preventDefault(); keys[key] = true; };
-    b.ontouchend = (e) => { e.preventDefault(); keys[key] = false; };
+// Control Binding
+const bind = (id, k) => {
+    const btn = document.getElementById(id);
+    btn.ontouchstart = (e) => { e.preventDefault(); keys[k] = true; };
+    btn.ontouchend = (e) => { e.preventDefault(); keys[k] = false; };
 };
-bind('up', 'ArrowUp'); bind('down', 'ArrowDown');
-bind('left', 'ArrowLeft'); bind('right', 'ArrowRight');
-
-function gameLoop() {
-    if(!active) return;
-    const s = 0.7;
-    let move = false;
-
-    if(keys['ArrowUp'] && girlPos.y > 10) { girlPos.y -= s; move = true; }
-    if(keys['ArrowDown'] && girlPos.y < 85) { girlPos.y += s; move = true; }
-    if(keys['ArrowLeft'] && girlPos.x > 5) { girlPos.x -= s; move = true; }
-    if(keys['ArrowRight'] && girlPos.x < 90) { girlPos.x += s; move = true; }
-
-    const g = document.getElementById('girl');
-    g.style.left = girlPos.x + "%";
-    g.style.top = girlPos.y + "%";
-    g.style.zIndex = Math.floor(girlPos.y);
-
-    if(move) g.classList.add('walking');
-    else g.classList.remove('walking');
-
-    checkCollisions();
-    requestAnimationFrame(gameLoop);
-}
+bind('left', 'ArrowLeft');
+bind('right', 'ArrowRight');
+document.getElementById('jump').ontouchstart = (e) => {
+    e.preventDefault();
+    if (!isJumping) { velY = 20; isJumping = true; }
+};
 
 function spawnHearts() {
-    const surf = document.getElementById('play-surface');
-    for(let i=0; i<5; i++) {
+    const layer = document.getElementById('hearts-layer');
+    for (let i = 0; i < 5; i++) {
         const h = document.createElement('div');
-        h.className = 'collect-heart';
+        h.className = 'collectible';
         h.innerHTML = '❤️';
-        h.style.left = (10 + Math.random() * 80) + "%";
-        h.style.top = (20 + Math.random() * 60) + "%";
-        surf.appendChild(h);
+        h.style.left = (600 + (i * 500)) + "px";
+        h.style.bottom = (25 + Math.random() * 20) + "%";
+        layer.appendChild(h);
     }
 }
 
-function checkCollisions() {
-    const gRect = document.getElementById('girl').getBoundingClientRect();
-    document.querySelectorAll('.collect-heart').forEach(h => {
+function loop() {
+    if (!gameActive) return;
+
+    // Movement
+    if (keys['ArrowLeft'] && girlX > 0) {
+        girlX -= 7;
+        girl.style.transform = "scaleX(-1)";
+    }
+    if (keys['ArrowRight'] && girlX < 2800) {
+        girlX += 7;
+        girl.style.transform = "scaleX(1)";
+    }
+
+    // Jump Physics
+    girlY += velY;
+    if (girlY > 0) {
+        velY -= 1.2; // Gravity
+    } else {
+        girlY = 0;
+        velY = 0;
+        isJumping = false;
+    }
+
+    // Snoopy Follow Logic (Mario style delay)
+    const targetSnoopyX = girlX - (girl.style.transform === "scaleX(-1)" ? -60 : 60);
+    snoopyX += (targetSnoopyX - snoopyX) * 0.1;
+    
+    // Apply Positions
+    girl.style.left = girlX + "px";
+    girl.style.bottom = (20 + (girlY / 10)) + "%";
+    
+    snoopy.style.left = snoopyX + "px";
+    snoopy.style.bottom = (20 + (girlY / 10)) + "%"; // Snoopy jumps with you
+    snoopy.style.transform = girl.style.transform;
+
+    // Camera follow
+    camera.scrollLeft = girlX - window.innerWidth / 2;
+
+    checkHearts();
+    requestAnimationFrame(loop);
+}
+
+function checkHearts() {
+    const gRect = girl.getBoundingClientRect();
+    document.querySelectorAll('.collectible').forEach((h, i) => {
         const hRect = h.getBoundingClientRect();
-        if(!(gRect.right < hRect.left || gRect.left > hRect.right || 
-             gRect.bottom < hRect.top || gRect.top > hRect.bottom)) {
+        if (Math.abs(gRect.left - hRect.left) < 40 && Math.abs(gRect.top - hRect.top) < 60) {
             h.remove();
-            hearts++;
-            document.getElementById('heart-counter').innerText = `❤️ ${hearts}/5`;
-            if(hearts === 5) win();
+            showPopup(CONFIG.heartMessages[score]);
+            score++;
+            document.getElementById('score').innerText = score;
+            if (score === 5) endGame();
         }
     });
 }
 
-function win() {
-    active = false;
-    show('scene-letter');
-    type(CONFIG.messages.letter, "letter-content", () => {
-        document.getElementById('next-day-btn').classList.remove('hidden');
-    });
+function showPopup(msg) {
+    gameActive = false;
+    const p = document.getElementById('heart-popup');
+    document.getElementById('popup-msg').innerText = msg;
+    p.classList.remove('hidden');
+    setTimeout(() => {
+        p.classList.add('hidden');
+        gameActive = true;
+        loop();
+    }, 2000);
 }
 
-document.getElementById('next-day-btn').onclick = () => {
-    alert("Day 1 Complete! Come back in 24 hours for Day 2.");
-    location.reload(); 
-};
+function endGame() {
+    gameActive = false;
+    document.getElementById('scene-end').classList.remove('hidden');
+    setTimeout(() => {
+        document.getElementById('scene-end').classList.add('active');
+        typeWriter("You did it! Snoopy is so happy. Day 2 unlocks tomorrow.", "final-msg");
+    }, 500);
+}
+
+function typeWriter(text, id, cb) {
+    const el = document.getElementById(id);
+    el.innerHTML = "";
+    let i = 0;
+    const interval = setInterval(() => {
+        if (i < text.length) {
+            el.innerHTML += text[i] === "|" ? "<br>" : text[i];
+            i++;
+        } else {
+            clearInterval(interval);
+            if (cb) cb();
+        }
+    }, 50);
+}
