@@ -1,5 +1,8 @@
 let currentDay = 0, gX = 250, gY = 0, vY = 0, score = 0, hearts = 100;
 let keys = {}, active = false, isJump = false, isPlacing = false, gameActive = false;
+let distractionsSpawned = 0;
+let distractionsDefeated = 0;
+const TOTAL_TO_WIN = 10; // Day 2 ends after 10 notes are gone
 
 window.onload = () => {
     let i = 0; const txt = "Hi Beautiful!|Pick a day and enjoy! ❤️";
@@ -24,6 +27,8 @@ function setupDay1() {
 
 function setupDay2() {
     gameActive = true;
+    distractionsSpawned = 0;
+    distractionsDefeated = 0;
     document.getElementById('pvz-grid').classList.remove('hidden');
     document.getElementById('pvz-ui').classList.remove('hidden');
     document.getElementById('controls-d1').classList.add('hidden');
@@ -35,7 +40,15 @@ function setupDay2() {
     
     document.getElementById('score-val').innerText = "100";
     hearts = 100;
-    setInterval(() => { if(gameActive) spawnDistraction(); }, 5000); 
+
+    // Spawns distractions until we hit the limit
+    const spawner = setInterval(() => {
+        if(!gameActive) return clearInterval(spawner);
+        if(distractionsSpawned < TOTAL_TO_WIN) {
+            spawnDistraction();
+            distractionsSpawned++;
+        }
+    }, 4000); 
 }
 
 function selectWoodstock() {
@@ -55,7 +68,7 @@ document.querySelectorAll('.lane').forEach(lane => {
             document.getElementById('score-val').innerText = hearts;
             isPlacing = false;
             document.querySelector('.seed-card').classList.remove('selected');
-            setInterval(() => { if(gameActive) shootHeart(lane); }, 2000);
+            setInterval(() => { if(gameActive) shootHeart(lane); }, 2500);
         }
     };
 });
@@ -66,36 +79,52 @@ function shootHeart(lane) {
     lane.appendChild(b);
     let bX = 70;
     const move = setInterval(() => {
-        bX += 8; b.style.left = bX + "px"; 
+        if(!gameActive) return clearInterval(move);
+        bX += 10; b.style.left = bX + "px"; 
+        
         const enemy = lane.querySelector('.enemy');
-        if(enemy && bX > enemy.offsetLeft - 10) { 
-            enemy.remove(); 
-            b.remove(); 
-            clearInterval(move); 
+        if(enemy) {
+            const eX = parseInt(enemy.style.left);
+            if(bX > eX) {
+                enemy.remove();
+                b.remove();
+                distractionsDefeated++;
+                checkWin();
+                clearInterval(move);
+            }
         }
         if(bX > window.innerWidth) { b.remove(); clearInterval(move); }
     }, 20);
 }
 
 function spawnDistraction() {
-    const lane = document.querySelectorAll('.lane')[Math.floor(Math.random() * 5)];
+    const lanes = document.querySelectorAll('.lane');
+    const lane = lanes[Math.floor(Math.random() * lanes.length)];
     const en = document.createElement('div');
     en.innerHTML = "📝"; en.className = "enemy"; 
     lane.appendChild(en);
-    let eX = window.innerWidth - 170; 
+    let eX = window.innerWidth - 200; 
+    en.style.left = eX + "px";
     
     const walk = setInterval(() => {
-        if(!gameActive) return clearInterval(walk);
-        if(!document.body.contains(en)) return clearInterval(walk);
-
-        eX -= 1.5; en.style.left = eX + "px"; 
+        if(!gameActive || !document.body.contains(en)) return clearInterval(walk);
+        eX -= 2; en.style.left = eX + "px"; 
         
         if(eX < 0) { 
+            gameActive = false;
             clearInterval(walk); 
             alert("Snoopy got distracted! ❤️"); 
             location.reload(); 
         }
     }, 30);
+}
+
+function checkWin() {
+    if(distractionsDefeated >= TOTAL_TO_WIN) {
+        gameActive = false;
+        alert("You Won! Snoopy stayed focused! 🥳❤️");
+        location.reload();
+    }
 }
 
 function loop() {
