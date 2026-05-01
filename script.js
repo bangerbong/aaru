@@ -36,21 +36,21 @@ function setupDay2() {
     document.getElementById('girl').style.display = 'none';
     document.getElementById('score-val').innerText = hearts;
 
-    // FIX 1: PASSIVE INCOME (Money over time)
+    // Passive Income: +25 hearts every 4 seconds
     const incomeLoop = setInterval(() => {
         if(!gameActive) return clearInterval(incomeLoop);
         hearts += 25; 
         document.getElementById('score-val').innerText = hearts;
     }, 4000);
 
-    // FIX 2: SPAWNER
+    // Monster Spawner
     const spawner = setInterval(() => {
         if(!gameActive) return clearInterval(spawner);
         spawnDistraction();
-    }, 5000); 
+    }, 4500); 
 }
 
-// FIX 3: MANUAL INCOME (Tap the heart icon for cash)
+// Manual Income: Tap the heart icon for cash
 document.getElementById('hud').onclick = () => {
     if(gameActive) {
         hearts += 10;
@@ -68,7 +68,6 @@ function selectWoodstock() {
 document.querySelectorAll('.lane').forEach(lane => {
     lane.onclick = (e) => {
         if(isPlacing && hearts >= 50) {
-            // Prevent lane overcrowding
             if (lane.querySelectorAll('.defender').length >= 3) return;
 
             const w = document.createElement('img');
@@ -82,7 +81,6 @@ document.querySelectorAll('.lane').forEach(lane => {
             isPlacing = false;
             document.querySelector('.seed-card').classList.remove('selected');
             
-            // Shooting logic for this bird
             const shootTimer = setInterval(() => {
                 if(!gameActive || !document.body.contains(w)) return clearInterval(shootTimer);
                 shootHeart(lane, w);
@@ -107,8 +105,7 @@ function shootHeart(lane, bird) {
         const enemies = lane.querySelectorAll('.enemy');
         enemies.forEach(en => {
             const enX = parseInt(en.style.left);
-            // Collision detection
-            if (bX >= enX - 20 && bX <= enX + 30) {
+            if (bX >= enX - 20 && bX <= enX + 40) {
                 en.remove();
                 b.remove();
                 distractionsDefeated++;
@@ -124,22 +121,26 @@ function shootHeart(lane, bird) {
 function spawnDistraction() {
     const lanes = document.querySelectorAll('.lane');
     const lane = lanes[Math.floor(Math.random() * lanes.length)];
-    const en = document.createElement('div');
-    en.innerHTML = "📝"; 
+    
+    // Using Blu.PNG for the monster
+    const en = document.createElement('img');
+    en.src = "Blu.PNG"; 
     en.className = "enemy"; 
-    en.style.left = (window.innerWidth - 200) + "px"; 
+    
+    let startPos = window.innerWidth - 150;
+    en.style.left = startPos + "px"; 
     lane.appendChild(en);
     
-    let eX = window.innerWidth - 200;
+    let eX = startPos;
     const walk = setInterval(() => {
         if(!gameActive || !document.body.contains(en)) return clearInterval(walk);
-        eX -= 1.5; 
+        eX -= 2; 
         en.style.left = eX + "px"; 
         
-        if(eX < 10) { 
+        if(eX < 15) { 
             gameActive = false;
             clearInterval(walk); 
-            alert("Snoopy got distracted! ❤️"); 
+            alert("Blu distracted Snoopy! ❤️"); 
             location.reload(); 
         }
     }, 30);
@@ -153,7 +154,7 @@ function checkWin() {
     }
 }
 
-// Day 1 Logic
+// Day 1 logic remains the same
 function setupDay1() {
     active = true;
     document.getElementById('score-val').innerText = "0/5";
