@@ -27,43 +27,66 @@ function setupDay1() {
 function setupDay2() {
     gameActive = true;
     distractionsDefeated = 0;
+    hearts = 100; // Reset hearts to 100
     document.getElementById('pvz-grid').classList.remove('hidden');
     document.getElementById('pvz-ui').classList.remove('hidden');
     document.getElementById('controls-d1').classList.add('hidden');
     document.getElementById('girl').style.display = 'none';
     document.getElementById('snoopy').style.left = "40px";
-    document.getElementById('score-val').innerText = "100";
-    hearts = 100;
+    document.getElementById('score-val').innerText = hearts;
 
+    // SPAWNER: Sends the notes
     const spawner = setInterval(() => {
         if(!gameActive) return clearInterval(spawner);
         spawnDistraction();
     }, 4500); 
+
+    // INCOME: Gives you +10 hearts every 3 seconds so you can buy more birds!
+    const income = setInterval(() => {
+        if(!gameActive) return clearInterval(income);
+        hearts += 10;
+        document.getElementById('score-val').innerText = hearts;
+    }, 3000);
 }
 
 function selectWoodstock() {
     if(hearts >= 50) {
         isPlacing = true;
         document.querySelector('.seed-card').classList.add('selected');
+    } else {
+        // Visual feedback if you're too poor
+        const card = document.querySelector('.seed-card');
+        card.style.background = "#ff5252";
+        setTimeout(() => card.style.background = "#795548", 200);
     }
 }
 
 document.querySelectorAll('.lane').forEach(lane => {
-    lane.onclick = () => {
+    lane.onclick = (e) => {
         if(isPlacing && hearts >= 50) {
+            // Check if lane already has a bird (optional cleanup)
+            if (lane.querySelector('.defender')) return; 
+
             const w = document.createElement('img');
             w.src = "Woodstock.png"; w.className = "defender"; 
             lane.appendChild(w);
+            
             hearts -= 50;
             document.getElementById('score-val').innerText = hearts;
+            
             isPlacing = false;
             document.querySelector('.seed-card').classList.remove('selected');
-            setInterval(() => { if(gameActive) shootHeart(lane); }, 2000);
+            
+            // Start shooting immediately and then every 2.5s
+            shootHeart(lane);
+            setInterval(() => { if(gameActive) shootHeart(lane); }, 2500);
         }
     };
 });
 
 function shootHeart(lane) {
+    if (!lane.querySelector('.defender')) return; // Don't shoot if bird was removed
+    
     const b = document.createElement('div');
     b.innerHTML = "❤️"; b.className = "bullet"; b.style.left = "60px";
     lane.appendChild(b);
@@ -71,10 +94,9 @@ function shootHeart(lane) {
 
     const move = setInterval(() => {
         if(!gameActive || !document.body.contains(b)) return clearInterval(move);
-        bX += 7; 
+        bX += 8; 
         b.style.left = bX + "px"; 
 
-        // Targeted Lane Collision
         const enemies = lane.querySelectorAll('.enemy');
         enemies.forEach(en => {
             const enX = parseInt(en.style.left);
@@ -96,19 +118,20 @@ function spawnDistraction() {
     const lane = lanes[Math.floor(Math.random() * lanes.length)];
     const en = document.createElement('div');
     en.innerHTML = "📝"; en.className = "enemy"; 
-    en.style.left = (window.innerWidth - 100) + "px"; // Start at the edge
+    
+    let startPos = window.innerWidth - 100;
+    en.style.left = startPos + "px"; 
     lane.appendChild(en);
     
-    let eX = window.innerWidth - 100;
-    
+    let eX = startPos;
     const walk = setInterval(() => {
         if(!gameActive) return clearInterval(walk);
         if(!document.body.contains(en)) return clearInterval(walk);
 
-        eX -= 2; 
+        eX -= 1.8; 
         en.style.left = eX + "px"; 
         
-        if(eX < 20) { // If it hits the black line/Snoopy
+        if(eX < 10) { 
             gameActive = false;
             clearInterval(walk); 
             alert("Snoopy got distracted! ❤️"); 
@@ -125,6 +148,7 @@ function checkWin() {
     }
 }
 
+// Day 1 Logic
 function loop() {
     if(!active || currentDay !== 1) return;
     if(keys['Left'] && gX > 50) gX -= 8;
