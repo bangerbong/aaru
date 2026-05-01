@@ -9,7 +9,6 @@
 </head>
 <body>
     <div id="game-container">
-        <!-- MENU SCREEN -->
         <div id="scene-start" class="scene active">
             <div class="intro-card">
                 <h1>Peanuts Adventure</h1>
@@ -23,17 +22,14 @@
             </div>
         </div>
 
-        <!-- GAME VIEWPORT -->
         <div id="scene-game" class="scene hidden">
             <div id="viewport">
                 <div id="world">
                     <div class="sky-bg"></div>
                     <img src="Snoopyhouse.PNG" id="snoopy-house" class="prop house">
-                    
                     <div id="obstacles-layer"></div>
                     <div id="hearts-layer"></div>
 
-                    <!-- Day 2 Grid -->
                     <div id="pvz-grid" class="hidden">
                         <div class="lane" data-lane="0"></div>
                         <div class="lane" data-lane="1"></div>
@@ -50,22 +46,17 @@
                     <img src="Snoopy_Peanuts.png" id="snoopy" class="sprite">
                     <img src="Girl.png" id="girl" class="sprite">
                 </div>
-                <div id="floor" class="grass-floor"></div>
             </div>
 
             <div id="hud">❤️ <span id="score-val">0</span></div>
             
-            <!-- Day 2 Toolbar -->
             <div id="pvz-ui" class="hidden">
                 <div class="seed-card" onclick="selectWoodstock()">
-                    <div class="seed-img-wrap">
-                        <img src="Woodstock.png">
-                    </div>
+                    <div class="seed-img-wrap"><img src="Woodstock.png"></div>
                     <div class="cost-tag">50</div>
                 </div>
             </div>
 
-            <!-- Day 1 Controls -->
             <div id="controls-d1" class="controls">
                 <div class="dpad">
                     <button id="left" class="btn">◀</button>
