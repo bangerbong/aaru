@@ -5,45 +5,41 @@ body { font-family: 'Fredoka One', cursive; background: #000; overflow: hidden; 
 .scene { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .hidden { display: none !important; }
 
-/* Menu Styles */
+/* Menu */
 .intro-card { background: white; padding: 30px; border: 6px solid var(--outline); border-radius: 30px; text-align: center; width: 85%; }
 .day-grid { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
-.day-btn { background: white; border: 4px solid var(--outline); border-radius: 15px; padding: 10px; width: 115px; font-family: 'Fredoka One'; cursor: pointer; transition: 0.2s; }
-.day-btn:active { transform: scale(0.95); background: #ffec3d; }
-.day-btn span { font-size: 0.7rem; color: #666; }
+.day-btn { background: white; border: 4px solid var(--outline); border-radius: 15px; padding: 10px; width: 115px; font-family: 'Fredoka One'; cursor: pointer; }
 
-/* Viewport & World */
+/* Backgrounds */
 #viewport { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
 #world { position: absolute; width: 6000px; height: 100%; bottom: 0; }
-.sky-bg { position: absolute; inset: 0; background: url('background.jpg') repeat-x bottom; background-size: cover; z-index: -1; }
+.sky-bg { position: absolute; inset: 0; background: #8ecae6; z-index: -1; }
 .grass-floor { position: fixed; bottom: 0; width: 100%; height: 15%; background: var(--grass); border-top: 6px solid var(--outline); z-index: 10; }
 
-/* Sprites & Props */
+/* Sprites */
 .sprite { position: absolute; bottom: 15%; z-index: 100; }
-#girl { height: 150px; }
-#snoopy { height: 90px; }
+#girl { height: 120px; }
+#snoopy { height: 70px; }
 .prop { position: absolute; bottom: 15%; z-index: 20; }
-.house { width: 200px; }
+.house { width: 180px; }
 
-/* Day 2: PvZ Grid */
-#pvz-grid { position: absolute; left: 150px; right: 0; top: 0; bottom: 15%; display: flex; flex-direction: column; width: 2000px; }
-.lane { flex: 1; border-bottom: 2px dashed rgba(0,0,0,0.1); position: relative; }
-.defender { position: absolute; height: 80%; top: 10%; z-index: 100; animation: hover 2s infinite ease-in-out; }
-.enemy { position: absolute; height: 70%; z-index: 110; right: 0; font-size: 40px; }
-.bullet { position: absolute; font-size: 25px; z-index: 120; }
+/* Day 2 Grid */
+#pvz-grid { position: absolute; left: 0; right: 0; top: 0; bottom: 15%; display: flex; flex-direction: column; width: 100%; }
+.lane { flex: 1; border-bottom: 1px dashed rgba(0,0,0,0.1); position: relative; }
+.defender { position: absolute; height: 60px; top: 10%; z-index: 100; }
+.enemy { position: absolute; height: 50px; z-index: 110; right: 20px; font-size: 40px; }
+.bullet { position: absolute; font-size: 20px; z-index: 120; }
 
-/* Day 2 UI */
-#pvz-ui { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 500; display: flex; gap: 20px; background: white; padding: 10px; border-radius: 15px; border: 4px solid var(--outline); }
-.seed-card { width: 60px; text-align: center; cursor: pointer; border: 2px solid #ccc; border-radius: 8px; }
-.seed-card.selected { background: #ffec3d; border-color: var(--outline); }
+/* FIXED SEED CARD */
+#pvz-ui { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; background: #795548; padding: 5px; border: 3px solid var(--outline); border-radius: 10px; }
+.seed-card { background: #bdbdbd; border: 2px solid var(--outline); width: 60px; height: 80px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+.seed-card.selected { background: #ffec3d; }
+.seed-img-container { width: 100%; height: 55px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.seed-card img { width: 45px; height: auto; object-fit: contain; }
+.cost { font-size: 14px; color: black; font-weight: bold; }
 
-/* Woodstock Animation */
-#woodstock-container { position: absolute; z-index: 200; text-align: center; }
-.woodstock-fly { width: 60px; animation: hover 2s infinite ease-in-out; }
-@keyframes hover { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-/* Controls */
-#hud { position: fixed; top: 20px; left: 20px; background: white; padding: 10px 20px; border-radius: 50px; border: 4px solid var(--outline); z-index: 1000; font-size: 1.2rem; }
+/* HUD & Buttons */
+#hud { position: fixed; top: 20px; left: 20px; background: white; padding: 10px; border-radius: 20px; border: 3px solid var(--outline); z-index: 1000; }
 .controls { position: fixed; bottom: 30px; width: 100%; display: flex; justify-content: space-between; padding: 0 30px; z-index: 1000; }
-.btn { width: 80px; height: 80px; background: white; border: 4px solid var(--outline); border-radius: 50%; font-size: 1.8rem; box-shadow: 0 5px 0 var(--outline); }
-.jump-btn { width: 120px; border-radius: 20px; background: #ffec3d; }
+.btn { width: 70px; height: 70px; background: white; border: 4px solid var(--outline); border-radius: 50%; font-size: 1.5rem; }
+.jump-btn { width: 100px; border-radius: 15px; background: #ffec3d; }
