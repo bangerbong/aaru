@@ -18,80 +18,83 @@ function startLevel(day) {
     day === 1 ? setupDay1() : setupDay2();
 }
 
-function setupDay1() {
-    active = true;
-    document.getElementById('score-val').innerText = "0/5";
-    requestAnimationFrame(loop);
-}
-
 function setupDay2() {
     gameActive = true;
     distractionsDefeated = 0;
-    hearts = 100; // Reset hearts to 100
+    hearts = 100; 
     document.getElementById('pvz-grid').classList.remove('hidden');
     document.getElementById('pvz-ui').classList.remove('hidden');
     document.getElementById('controls-d1').classList.add('hidden');
     document.getElementById('girl').style.display = 'none';
-    document.getElementById('snoopy').style.left = "40px";
     document.getElementById('score-val').innerText = hearts;
 
-    // SPAWNER: Sends the notes
+    // THE INCOME FIX: You get money over time now!
+    const incomeLoop = setInterval(() => {
+        if(!gameActive) return clearInterval(incomeLoop);
+        hearts += 25; 
+        document.getElementById('score-val').innerText = hearts;
+    }, 4000);
+
     const spawner = setInterval(() => {
         if(!gameActive) return clearInterval(spawner);
         spawnDistraction();
-    }, 4500); 
-
-    // INCOME: Gives you +10 hearts every 3 seconds so you can buy more birds!
-    const income = setInterval(() => {
-        if(!gameActive) return clearInterval(income);
-        hearts += 10;
-        document.getElementById('score-val').innerText = hearts;
-    }, 3000);
+    }, 5000); 
 }
 
 function selectWoodstock() {
     if(hearts >= 50) {
         isPlacing = true;
         document.querySelector('.seed-card').classList.add('selected');
-    } else {
-        // Visual feedback if you're too poor
-        const card = document.querySelector('.seed-card');
-        card.style.background = "#ff5252";
-        setTimeout(() => card.style.background = "#795548", 200);
     }
 }
+
+// Add a click listener to the HUD so you can manually tap for extra hearts
+document.getElementById('hud').onclick = () => {
+    if(gameActive) {
+        hearts += 10;
+        document.getElementById('score-val').innerText = hearts;
+    }
+};
 
 document.querySelectorAll('.lane').forEach(lane => {
     lane.onclick = (e) => {
         if(isPlacing && hearts >= 50) {
-            // Check if lane already has a bird (optional cleanup)
-            if (lane.querySelector('.defender')) return; 
+            // Stop people from stacking 100 birds in one spot
+            if (lane.querySelectorAll('.defender').length >= 3) {
+                alert("Lane full!");
+                return;
+            }
 
             const w = document.createElement('img');
-            w.src = "Woodstock.png"; w.className = "defender"; 
+            w.src = "Woodstock.png"; 
+            w.className = "defender"; 
+            // Offset the bird slightly based on how many are already there
+            w.style.left = (lane.querySelectorAll('.defender').length * 40) + "px";
             lane.appendChild(w);
             
             hearts -= 50;
             document.getElementById('score-val').innerText = hearts;
-            
             isPlacing = false;
             document.querySelector('.seed-card').classList.remove('selected');
             
-            // Start shooting immediately and then every 2.5s
-            shootHeart(lane);
-            setInterval(() => { if(gameActive) shootHeart(lane); }, 2500);
+            // Set up shooting for THIS specific bird
+            const shootTimer = setInterval(() => {
+                if(!gameActive || !document.body.contains(w)) return clearInterval(shootTimer);
+                shootHeart(lane, w);
+            }, 3000);
         }
     };
 });
 
-function shootHeart(lane) {
-    if (!lane.querySelector('.defender')) return; // Don't shoot if bird was removed
-    
+function shootHeart(lane, bird) {
     const b = document.createElement('div');
-    b.innerHTML = "❤️"; b.className = "bullet"; b.style.left = "60px";
+    b.innerHTML = "❤️"; 
+    b.className = "bullet"; 
+    // Bullet starts at the specific bird's position
+    b.style.left = (parseInt(bird.style.left) + 30) + "px";
     lane.appendChild(b);
-    let bX = 60;
-
+    
+    let bX = parseInt(b.style.left);
     const move = setInterval(() => {
         if(!gameActive || !document.body.contains(b)) return clearInterval(move);
         bX += 8; 
@@ -100,7 +103,7 @@ function shootHeart(lane) {
         const enemies = lane.querySelectorAll('.enemy');
         enemies.forEach(en => {
             const enX = parseInt(en.style.left);
-            if (bX >= enX - 20 && bX <= enX + 40) {
+            if (bX >= enX - 20 && bX <= enX + 30) {
                 en.remove();
                 b.remove();
                 distractionsDefeated++;
@@ -117,18 +120,15 @@ function spawnDistraction() {
     const lanes = document.querySelectorAll('.lane');
     const lane = lanes[Math.floor(Math.random() * lanes.length)];
     const en = document.createElement('div');
-    en.innerHTML = "📝"; en.className = "enemy"; 
-    
-    let startPos = window.innerWidth - 100;
-    en.style.left = startPos + "px"; 
+    en.innerHTML = "📝"; 
+    en.className = "enemy"; 
+    en.style.left = (window.innerWidth - 200) + "px"; 
     lane.appendChild(en);
     
-    let eX = startPos;
+    let eX = window.innerWidth - 200;
     const walk = setInterval(() => {
-        if(!gameActive) return clearInterval(walk);
-        if(!document.body.contains(en)) return clearInterval(walk);
-
-        eX -= 1.8; 
+        if(!gameActive || !document.body.contains(en)) return clearInterval(walk);
+        eX -= 1.5; 
         en.style.left = eX + "px"; 
         
         if(eX < 10) { 
@@ -149,6 +149,12 @@ function checkWin() {
 }
 
 // Day 1 Logic
+function setupDay1() {
+    active = true;
+    document.getElementById('score-val').innerText = "0/5";
+    requestAnimationFrame(loop);
+}
+
 function loop() {
     if(!active || currentDay !== 1) return;
     if(keys['Left'] && gX > 50) gX -= 8;
