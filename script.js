@@ -154,3 +154,21 @@ function showWin() {
         location.reload(); 
     };
 }
+// Add this inside your setupDay2() function in script.js
+function setupDay2() {
+    gameActive = true;
+    document.getElementById('pvz-grid').classList.remove('hidden');
+    document.getElementById('pvz-ui').classList.remove('hidden');
+    document.getElementById('controls-d1').classList.add('hidden');
+    
+    // Hide Girl, move Snoopy to the far left "House" area
+    document.getElementById('girl').classList.add('hidden');
+    document.getElementById('snoopy').style.left = "20px";
+    document.getElementById('snoopy-house').style.left = "0px";
+    
+    document.getElementById('score-val').innerText = "100";
+    hearts = 100;
+    
+    setInterval(() => { if(gameActive) spawnDistraction(); }, 4000);
+}
+
