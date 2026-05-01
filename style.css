@@ -113,10 +113,10 @@ body {
 
 #snoopy-house { left: 10px; }
 
-/* Defense Grid (Day 2) */
+/* Defense Grid */
 #pvz-grid { 
     position: absolute; 
-    left: 170px; /* Aligned after Snoopy's house */
+    left: 170px; 
     width: calc(100% - 170px); 
     top: 15%; 
     bottom: 15%; 
@@ -132,31 +132,27 @@ body {
     display: flex; 
     align-items: center; 
     border-bottom: 2px dashed rgba(0,0,0,0.1); 
-    overflow: visible; /* Allows hearts to travel across lanes */
 }
 
 .lane:nth-child(odd) { background-color: rgba(122, 186, 97, 0.4); }
 .lane:nth-child(even) { background-color: rgba(104, 163, 83, 0.4); }
 
-/* Game Entities - CRITICAL FOR COLLISION */
+/* Entities */
 .defender { 
-    height: 55px !important; 
-    width: auto !important; 
+    height: 55px; 
+    width: auto; 
     position: absolute; 
-    left: 5px; 
     z-index: 110;
 }
 
+/* UPDATED BLU.PNG STYLING */
 .enemy { 
     position: absolute; 
-    font-size: 40px; 
     z-index: 120;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    pointer-events: none; /* Prevents clicks on notes from blocking Woodstock placement */
+    height: 65px; /* Adjust this to make Blu bigger or smaller */
+    width: auto; 
+    pointer-events: none;
+    filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
 }
 
 .bullet { 
@@ -186,7 +182,6 @@ body {
     display: flex; 
     flex-direction: column; 
     cursor: pointer; 
-    overflow: hidden;
 }
 
 .seed-img-wrap { 
@@ -198,8 +193,8 @@ body {
 }
 
 .seed-img-wrap img { 
-    width: 50px !important; 
-    height: auto !important; 
+    width: 45px; 
+    height: auto; 
 }
 
 .cost-tag { 
@@ -213,7 +208,7 @@ body {
 
 .seed-card.selected { 
     border-color: #ffeb3b; 
-    box-shadow: 0 0 20px #ffeb3b; 
+    box-shadow: 0 0 15px #ffeb3b; 
     transform: scale(1.05);
 }
 
@@ -227,6 +222,7 @@ body {
     border: 4px solid var(--outline); 
     z-index: 1000; 
     font-size: 1.2rem;
+    cursor: pointer; /* To show you can click it for money */
 }
 
 /* Controls */
