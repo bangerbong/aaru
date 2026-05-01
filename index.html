@@ -29,8 +29,9 @@
                 <div id="world">
                     <div class="sky-bg"></div>
                     
-                    <!-- Day 1 Assets -->
-                    <img src="Snoopyhouse.png" id="snoopy-house" class="prop house" style="left: 600px;">
+                    <!-- Updated Filename Here -->
+                    <img src="Snoopyhouse.PNG" id="snoopy-house" class="prop house" style="left: 600px;">
+                    
                     <div id="obstacles-layer"></div>
                     <div id="hearts-layer"></div>
 
@@ -58,10 +59,14 @@
 
             <!-- UI -->
             <div id="hud">❤️ <span id="score-val">0</span></div>
+            
+            <!-- FIXED WOODSTOCK UI -->
             <div id="pvz-ui" class="hidden">
                 <div class="seed-card" onclick="selectWoodstock()">
-                    <img src="Woodstock.png">
-                    <span>50</span>
+                    <div class="seed-img-container">
+                        <img src="Woodstock.png">
+                    </div>
+                    <span class="cost">50</span>
                 </div>
             </div>
 
