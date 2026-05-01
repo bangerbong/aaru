@@ -152,25 +152,24 @@ function checkWin() {
         alert("You Won! Snoopy stayed focused! 🥳❤️
             And heres 19 things I love about you:
             you  
-your smile  
-the way you laugh  
-your eyes fr  
-your voice  
-the way you say some things
-your random moods  
-your love to animals
-freaky aaru
-the way u say maine kya kiya
-pyara aaru
-your smart brain things that u talk about 
-your pov about things
-your messages when i wake up 
-the way you get me  
-your presence  
-your chaos  
-your love  
-us
-            ");
+            your smile  
+            the way you laugh  
+            your eyes fr  
+            your voice  
+            the way you say some things
+            your random moods  
+            your love to animals
+            freaky aaru
+            the way u say maine kya kiya
+            pyara aaru
+            your smart brain things that u talk about 
+            your pov about things
+            your messages when i wake up 
+            the way you get me  
+            your presence  
+            your chaos  
+            your love  
+            us");
         location.reload();
     }
 }
