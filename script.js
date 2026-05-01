@@ -4,7 +4,7 @@ let distractionsDefeated = 0;
 const TOTAL_TO_WIN = 10; 
 
 window.onload = () => {
-    let i = 0; const txt = "Hi Aaru!|you got a day 2 and enjoy! ❤️";
+    let i = 0; const txt = "Hi Aaru!|you reached day 2! ❤️";
     const t = setInterval(() => {
         const typewriter = document.getElementById('typewriter');
         if (typewriter) {
@@ -149,7 +149,28 @@ function spawnDistraction() {
 function checkWin() {
     if(distractionsDefeated >= TOTAL_TO_WIN) {
         gameActive = false;
-        alert("You Won! Snoopy stayed focused! 🥳❤️");
+        alert("You Won! Snoopy stayed focused! 🥳❤️
+            And heres 19 things I love about you:
+            you  
+your smile  
+the way you laugh  
+your eyes fr  
+your voice  
+the way you say some things
+your random moods  
+your love to animals
+freaky aaru
+the way u say maine kya kiya
+pyara aaru
+your smart brain things that u talk about 
+your pov about things
+your messages when i wake up 
+the way you get me  
+your presence  
+your chaos  
+your love  
+us
+            ");
         location.reload();
     }
 }
