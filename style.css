@@ -1,35 +1,64 @@
-:root { --sky: #8ecae6; --outline: #222; }
+:root { 
+    --sky: #8ecae6; 
+    --grass: #7aba61; 
+    --grass-dark: #68a353; 
+    --outline: #222; 
+}
 * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-body { font-family: 'Fredoka One', cursive; background: #8ecae6; overflow: hidden; touch-action: manipulation; }
+body { font-family: 'Fredoka One', cursive; background: var(--sky); overflow: hidden; touch-action: manipulation; }
 
 .scene { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .hidden { display: none !important; }
 
-.intro-card { background: white; padding: 30px; border: 6px solid var(--outline); border-radius: 30px; text-align: center; width: 85%; }
+.intro-card { background: white; padding: 30px; border: 6px solid var(--outline); border-radius: 30px; text-align: center; width: 85%; z-index: 2000; position: relative;}
 .day-grid { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
 .day-btn { background: white; border: 4px solid var(--outline); border-radius: 15px; padding: 10px; width: 115px; font-family: 'Fredoka One'; cursor: pointer; }
 
 #viewport { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
 #world { position: absolute; width: 6000px; height: 100%; bottom: 0; }
 .sky-bg { position: absolute; inset: 0; background: var(--sky); z-index: -1; }
+.grass-floor { position: fixed; bottom: 0; width: 100%; height: 15%; background: var(--grass); border-top: 6px solid var(--outline); z-index: 10; }
 
-/* Positions sprites at the very bottom edge */
-.sprite { position: absolute; bottom: 0; z-index: 100; height: 100px; width: auto; }
-.prop { position: absolute; bottom: 0; z-index: 20; height: 150px; width: auto; }
-#snoopy-house { left: 0; }
+/* Characters strictly sit ON the grass (15% up from bottom) */
+.sprite { position: absolute; bottom: 15%; z-index: 100; height: 90px; width: auto; }
+.prop { position: absolute; bottom: 15%; z-index: 20; height: 140px; width: auto; }
+#snoopy-house { left: 10px; }
 
-#pvz-grid { position: absolute; left: 150px; width: calc(100% - 150px); top: 0; bottom: 0; display: flex; flex-direction: column; z-index: 50; }
-.lane { flex: 1; border-bottom: 2px dashed rgba(0,0,0,0.05); position: relative; display: flex; align-items: center; }
+/* THE STRIPED LAWN FIX */
+#pvz-grid { 
+    position: absolute; 
+    left: 170px; /* Starts exactly to the right of Snoopy */
+    width: calc(100% - 170px); 
+    top: 15%; /* Leaves room for UI at top */
+    bottom: 15%; /* Stops exactly at the grass line */
+    display: flex; 
+    flex-direction: column; 
+    z-index: 50; 
+    border-left: 6px solid var(--outline); /* Solid defense line */
+}
+.lane { 
+    flex: 1; 
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+    border-bottom: 2px dashed rgba(0,0,0,0.1);
+}
+/* Alternating colors so you can see EVERY lane */
+.lane:nth-child(odd) { background-color: rgba(122, 186, 97, 0.6); }
+.lane:nth-child(even) { background-color: rgba(104, 163, 83, 0.6); }
 
-.defender { height: 60px !important; width: 60px !important; object-fit: contain; position: absolute; left: 10px; }
-.enemy { position: absolute; right: 20px; font-size: 40px; }
+/* Game Elements */
+.defender { height: 50px !important; width: 50px !important; object-fit: contain; position: absolute; left: 10px; }
+.enemy { position: absolute; right: 20px; font-size: 35px; }
 .bullet { position: absolute; font-size: 25px; z-index: 120; }
 
+/* UI */
 #pvz-ui { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 8px; }
 .seed-card { background: #795548; border: 3px solid var(--outline); width: 65px; height: 85px; border-radius: 10px; display: flex; flex-direction: column; cursor: pointer; }
 .seed-img-wrap { background: #bdbdbd; height: 60px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 .seed-img-wrap img { width: 45px !important; height: 45px !important; object-fit: contain; }
 .cost-tag { background: white; text-align: center; font-size: 14px; font-weight: bold; border-top: 2px solid var(--outline); }
+.seed-card.selected { border-color: #ffeb3b; box-shadow: 0 0 15px #ffeb3b; }
 
 #hud { position: fixed; top: 20px; left: 20px; background: white; padding: 10px 20px; border-radius: 50px; border: 4px solid var(--outline); z-index: 1000; }
 .controls { position: fixed; bottom: 30px; width: 100%; display: flex; justify-content: space-between; padding: 0 30px; z-index: 1000; }
