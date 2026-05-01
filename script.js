@@ -4,16 +4,23 @@ let distractionsDefeated = 0;
 const TOTAL_TO_WIN = 10; 
 
 window.onload = () => {
-    let i = 0; const txt = "Hi Aaru!|you reached day 2! ❤️";
+    const typewriter = document.getElementById('typewriter');
+    const levelSelect = document.getElementById('level-select');
+    const txt = "Hi Aaru!|you reached day 2! ❤️";
+    let i = 0;
+
+    // Safety check to prevent the "stuck" issue if the element isn't found
+    if (!typewriter) {
+        if (levelSelect) levelSelect.classList.remove('hidden');
+        return;
+    }
+
     const t = setInterval(() => {
-        const typewriter = document.getElementById('typewriter');
-        if (typewriter) {
-            typewriter.innerHTML += txt[i] === "|" ? "<br>" : txt[i];
-            i++; 
-            if(i >= txt.length) { 
-                clearInterval(t); 
-                document.getElementById('level-select').classList.remove('hidden'); 
-            }
+        typewriter.innerHTML += txt[i] === "|" ? "<br>" : txt[i];
+        i++; 
+        if(i >= txt.length) { 
+            clearInterval(t); 
+            if (levelSelect) levelSelect.classList.remove('hidden'); 
         }
     }, 40);
 };
@@ -36,21 +43,18 @@ function setupDay2() {
     document.getElementById('girl').style.display = 'none';
     document.getElementById('score-val').innerText = hearts;
 
-    // Passive Income: +25 hearts every 4 seconds
     const incomeLoop = setInterval(() => {
         if(!gameActive) return clearInterval(incomeLoop);
         hearts += 25; 
         document.getElementById('score-val').innerText = hearts;
     }, 4000);
 
-    // Monster Spawner
     const spawner = setInterval(() => {
         if(!gameActive) return clearInterval(spawner);
         spawnDistraction();
     }, 4500); 
 }
 
-// Manual Income: Tap the heart icon for cash
 document.getElementById('hud').onclick = () => {
     if(gameActive) {
         hearts += 10;
@@ -121,8 +125,6 @@ function shootHeart(lane, bird) {
 function spawnDistraction() {
     const lanes = document.querySelectorAll('.lane');
     const lane = lanes[Math.floor(Math.random() * lanes.length)];
-    
-    // Using Blu.PNG for the monster
     const en = document.createElement('img');
     en.src = "Blu.PNG"; 
     en.className = "enemy"; 
@@ -149,32 +151,12 @@ function spawnDistraction() {
 function checkWin() {
     if(distractionsDefeated >= TOTAL_TO_WIN) {
         gameActive = false;
-        alert("You Won! Snoopy stayed focused! 🥳❤️
-            And heres 19 things I love about you:
-            you  
-            your smile  
-            the way you laugh  
-            your eyes fr  
-            your voice  
-            the way you say some things
-            your random moods  
-            your love to animals
-            freaky aaru
-            the way u say maine kya kiya
-            pyara aaru
-            your smart brain things that u talk about 
-            your pov about things
-            your messages when i wake up 
-            the way you get me  
-            your presence  
-            your chaos  
-            your love  
-            us");
+        // Formatted with \n to ensure the multi-line message works in a browser alert
+        alert("You Won! Snoopy stayed focused! 🥳❤️\n\nAnd heres 19 things I love about you:\n1. you\n2. your smile\n3. the way you laugh\n4. your eyes fr\n5. your voice\n6. the way you say some things\n7. your random moods\n8. your love to animals\n9. freaky aaru\n10. the way u say maine kya kiya\n11. pyara aaru\n12. your smart brain things that u talk about\n13. your pov about things\n14. your messages when i wake up\n15. the way you get me\n16. your presence\n17. your chaos\n18. your love\n19. us");
         location.reload();
     }
 }
 
-// Day 1 logic remains the same
 function setupDay1() {
     active = true;
     document.getElementById('score-val').innerText = "0/5";
