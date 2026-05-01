@@ -19,40 +19,33 @@ body { font-family: 'Fredoka One', cursive; background: var(--sky); overflow: hi
 .sky-bg { position: absolute; inset: 0; background: var(--sky); z-index: -1; }
 .grass-floor { position: fixed; bottom: 0; width: 100%; height: 15%; background: var(--grass); border-top: 6px solid var(--outline); z-index: 10; }
 
-/* Characters strictly sit ON the grass (15% up from bottom) */
+/* Character & Prop Anchors */
 .sprite { position: absolute; bottom: 15%; z-index: 100; height: 90px; width: auto; }
 .prop { position: absolute; bottom: 15%; z-index: 20; height: 140px; width: auto; }
 #snoopy-house { left: 10px; }
 
-/* THE STRIPED LAWN FIX */
+/* Grid Styling */
 #pvz-grid { 
     position: absolute; 
-    left: 170px; /* Starts exactly to the right of Snoopy */
+    left: 170px; 
     width: calc(100% - 170px); 
-    top: 15%; /* Leaves room for UI at top */
-    bottom: 15%; /* Stops exactly at the grass line */
+    top: 15%; 
+    bottom: 15%; 
     display: flex; 
     flex-direction: column; 
     z-index: 50; 
-    border-left: 6px solid var(--outline); /* Solid defense line */
+    border-left: 6px solid var(--outline); 
 }
-.lane { 
-    flex: 1; 
-    position: relative; 
-    display: flex; 
-    align-items: center; 
-    border-bottom: 2px dashed rgba(0,0,0,0.1);
-}
-/* Alternating colors so you can see EVERY lane */
+.lane { flex: 1; position: relative; display: flex; align-items: center; border-bottom: 2px dashed rgba(0,0,0,0.1); }
 .lane:nth-child(odd) { background-color: rgba(122, 186, 97, 0.6); }
 .lane:nth-child(even) { background-color: rgba(104, 163, 83, 0.6); }
 
-/* Game Elements */
+/* Combat Elements */
 .defender { height: 50px !important; width: 50px !important; object-fit: contain; position: absolute; left: 10px; }
-.enemy { position: absolute; right: 20px; font-size: 35px; }
+.enemy { position: absolute; font-size: 35px; }
 .bullet { position: absolute; font-size: 25px; z-index: 120; }
 
-/* UI */
+/* UI Elements */
 #pvz-ui { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 8px; }
 .seed-card { background: #795548; border: 3px solid var(--outline); width: 65px; height: 85px; border-radius: 10px; display: flex; flex-direction: column; cursor: pointer; }
 .seed-img-wrap { background: #bdbdbd; height: 60px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
