@@ -29,7 +29,6 @@ function setupDay2() {
     document.getElementById('controls-d1').classList.add('hidden');
     document.getElementById('girl').style.display = 'none';
     
-    // Lock Snoopy to his house behind the defense line
     document.getElementById('snoopy').style.left = "40px";
     document.getElementById('snoopy').style.bottom = "15%"; 
     document.getElementById('snoopy-house').style.left = "10px";
@@ -69,7 +68,11 @@ function shootHeart(lane) {
     const move = setInterval(() => {
         bX += 8; b.style.left = bX + "px"; 
         const enemy = lane.querySelector('.enemy');
-        if(enemy && bX > enemy.offsetLeft - 10) { enemy.remove(); b.remove(); clearInterval(move); }
+        if(enemy && bX > enemy.offsetLeft - 10) { 
+            enemy.remove(); 
+            b.remove(); 
+            clearInterval(move); 
+        }
         if(bX > window.innerWidth) { b.remove(); clearInterval(move); }
     }, 20);
 }
@@ -79,12 +82,19 @@ function spawnDistraction() {
     const en = document.createElement('div');
     en.innerHTML = "📝"; en.className = "enemy"; 
     lane.appendChild(en);
-    let eX = window.innerWidth - 170; // Start at far right of the grid
+    let eX = window.innerWidth - 170; 
+    
     const walk = setInterval(() => {
         if(!gameActive) return clearInterval(walk);
+        if(!document.body.contains(en)) return clearInterval(walk);
+
         eX -= 1.5; en.style.left = eX + "px"; 
-        // If it crosses the thick black line on the left, you lose
-        if(eX < 0) { clearInterval(walk); alert("Snoopy got distracted! ❤️"); location.reload(); }
+        
+        if(eX < 0) { 
+            clearInterval(walk); 
+            alert("Snoopy got distracted! ❤️"); 
+            location.reload(); 
+        }
     }, 30);
 }
 
@@ -95,7 +105,6 @@ function loop() {
     gY += vY;
     if(gY > 0) vY -= 1.2; else { gY = 0; vY = 0; isJump = false; }
     
-    // Added '15 +' back so they don't sink into the grass
     document.getElementById('girl').style.left = gX + "px";
     document.getElementById('girl').style.bottom = (15 + (gY/10)) + "%";
     document.getElementById('snoopy').style.left = (gX - 80) + "px";
@@ -108,6 +117,7 @@ function loop() {
 
 const setupIn = (id, k) => {
     const el = document.getElementById(id);
+    if(!el) return;
     el.ontouchstart = (e) => { e.preventDefault(); keys[k] = true; };
     el.ontouchend = (e) => { e.preventDefault(); keys[k] = false; };
 };
