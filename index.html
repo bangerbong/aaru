@@ -9,6 +9,7 @@
 </head>
 <body>
     <div id="game-container">
+        <!-- Start Menu -->
         <div id="scene-start" class="scene active">
             <div class="intro-card">
                 <h1>Peanuts Adventure</h1>
@@ -22,6 +23,7 @@
             </div>
         </div>
 
+        <!-- Main Game Scene -->
         <div id="scene-game" class="scene hidden">
             <div id="viewport">
                 <div id="world">
@@ -30,7 +32,7 @@
                     <div id="obstacles-layer"></div>
                     <div id="hearts-layer"></div>
 
-                    <!-- THE NEW VISIBLE LAWN -->
+                    <!-- Visible Striped Defense Grid -->
                     <div id="pvz-grid" class="hidden">
                         <div class="lane" data-lane="0"></div>
                         <div class="lane" data-lane="1"></div>
@@ -47,7 +49,6 @@
                     <img src="Snoopy_Peanuts.png" id="snoopy" class="sprite">
                     <img src="Girl.png" id="girl" class="sprite">
                 </div>
-                <!-- Brought the floor back! -->
                 <div id="floor" class="grass-floor"></div>
             </div>
 
