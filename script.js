@@ -6,8 +6,15 @@ const TOTAL_TO_WIN = 10;
 window.onload = () => {
     let i = 0; const txt = "Hi Beautiful!|Pick a day and enjoy! ❤️";
     const t = setInterval(() => {
-        document.getElementById('typewriter').innerHTML += txt[i] === "|" ? "<br>" : txt[i];
-        i++; if(i >= txt.length) { clearInterval(t); document.getElementById('level-select').classList.remove('hidden'); }
+        const typewriter = document.getElementById('typewriter');
+        if (typewriter) {
+            typewriter.innerHTML += txt[i] === "|" ? "<br>" : txt[i];
+            i++; 
+            if(i >= txt.length) { 
+                clearInterval(t); 
+                document.getElementById('level-select').classList.remove('hidden'); 
+            }
+        }
     }, 40);
 };
 
@@ -22,24 +29,34 @@ function setupDay2() {
     gameActive = true;
     distractionsDefeated = 0;
     hearts = 100; 
+    
     document.getElementById('pvz-grid').classList.remove('hidden');
     document.getElementById('pvz-ui').classList.remove('hidden');
     document.getElementById('controls-d1').classList.add('hidden');
     document.getElementById('girl').style.display = 'none';
     document.getElementById('score-val').innerText = hearts;
 
-    // THE INCOME FIX: You get money over time now!
+    // FIX 1: PASSIVE INCOME (Money over time)
     const incomeLoop = setInterval(() => {
         if(!gameActive) return clearInterval(incomeLoop);
         hearts += 25; 
         document.getElementById('score-val').innerText = hearts;
     }, 4000);
 
+    // FIX 2: SPAWNER
     const spawner = setInterval(() => {
         if(!gameActive) return clearInterval(spawner);
         spawnDistraction();
     }, 5000); 
 }
+
+// FIX 3: MANUAL INCOME (Tap the heart icon for cash)
+document.getElementById('hud').onclick = () => {
+    if(gameActive) {
+        hearts += 10;
+        document.getElementById('score-val').innerText = hearts;
+    }
+};
 
 function selectWoodstock() {
     if(hearts >= 50) {
@@ -48,27 +65,15 @@ function selectWoodstock() {
     }
 }
 
-// Add a click listener to the HUD so you can manually tap for extra hearts
-document.getElementById('hud').onclick = () => {
-    if(gameActive) {
-        hearts += 10;
-        document.getElementById('score-val').innerText = hearts;
-    }
-};
-
 document.querySelectorAll('.lane').forEach(lane => {
     lane.onclick = (e) => {
         if(isPlacing && hearts >= 50) {
-            // Stop people from stacking 100 birds in one spot
-            if (lane.querySelectorAll('.defender').length >= 3) {
-                alert("Lane full!");
-                return;
-            }
+            // Prevent lane overcrowding
+            if (lane.querySelectorAll('.defender').length >= 3) return;
 
             const w = document.createElement('img');
             w.src = "Woodstock.png"; 
             w.className = "defender"; 
-            // Offset the bird slightly based on how many are already there
             w.style.left = (lane.querySelectorAll('.defender').length * 40) + "px";
             lane.appendChild(w);
             
@@ -77,11 +82,11 @@ document.querySelectorAll('.lane').forEach(lane => {
             isPlacing = false;
             document.querySelector('.seed-card').classList.remove('selected');
             
-            // Set up shooting for THIS specific bird
+            // Shooting logic for this bird
             const shootTimer = setInterval(() => {
                 if(!gameActive || !document.body.contains(w)) return clearInterval(shootTimer);
                 shootHeart(lane, w);
-            }, 3000);
+            }, 2500);
         }
     };
 });
@@ -90,19 +95,19 @@ function shootHeart(lane, bird) {
     const b = document.createElement('div');
     b.innerHTML = "❤️"; 
     b.className = "bullet"; 
-    // Bullet starts at the specific bird's position
     b.style.left = (parseInt(bird.style.left) + 30) + "px";
     lane.appendChild(b);
     
     let bX = parseInt(b.style.left);
     const move = setInterval(() => {
         if(!gameActive || !document.body.contains(b)) return clearInterval(move);
-        bX += 8; 
+        bX += 10; 
         b.style.left = bX + "px"; 
 
         const enemies = lane.querySelectorAll('.enemy');
         enemies.forEach(en => {
             const enX = parseInt(en.style.left);
+            // Collision detection
             if (bX >= enX - 20 && bX <= enX + 30) {
                 en.remove();
                 b.remove();
@@ -162,13 +167,21 @@ function loop() {
     gY += vY;
     if(gY > 0) vY -= 1.2; else { gY = 0; vY = 0; isJump = false; }
     
-    document.getElementById('girl').style.left = gX + "px";
-    document.getElementById('girl').style.bottom = (15 + (gY/10)) + "%";
-    document.getElementById('snoopy').style.left = (gX - 80) + "px";
-    document.getElementById('snoopy').style.bottom = (15 + (gY/10)) + "%";
+    const girl = document.getElementById('girl');
+    const snoopy = document.getElementById('snoopy');
+    const world = document.getElementById('world');
+
+    if(girl) {
+        girl.style.left = gX + "px";
+        girl.style.bottom = (15 + (gY/10)) + "%";
+    }
+    if(snoopy) {
+        snoopy.style.left = (gX - 80) + "px";
+        snoopy.style.bottom = (15 + (gY/10)) + "%";
+    }
     
     const viewX = -(gX - window.innerWidth / 2);
-    document.getElementById('world').style.transform = `translateX(${viewX > 0 ? 0 : viewX}px)`;
+    if(world) world.style.transform = `translateX(${viewX > 0 ? 0 : viewX}px)`;
     requestAnimationFrame(loop);
 }
 
@@ -179,4 +192,5 @@ const setupIn = (id, k) => {
     el.ontouchend = (e) => { e.preventDefault(); keys[k] = false; };
 };
 setupIn('left', 'Left'); setupIn('right', 'Right');
-document.getElementById('jump').ontouchstart = (e) => { if(!isJump){vY=22;isJump=true;}};
+const jumpBtn = document.getElementById('jump');
+if(jumpBtn) jumpBtn.ontouchstart = (e) => { if(!isJump){vY=22;isJump=true;}};
