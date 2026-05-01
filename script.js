@@ -1,8 +1,7 @@
-let currentDay = 0, gX = 250, gY = 0, vY = 0, score = 0, hearts = 100;
+let currentDay = 0, gX = 250, gY = 0, vY = 0, hearts = 100;
 let keys = {}, active = false, isJump = false, isPlacing = false, gameActive = false;
-let distractionsSpawned = 0;
 let distractionsDefeated = 0;
-const TOTAL_TO_WIN = 10; // Day 2 ends after 10 notes are gone
+const TOTAL_TO_WIN = 10; 
 
 window.onload = () => {
     let i = 0; const txt = "Hi Beautiful!|Pick a day and enjoy! ❤️";
@@ -20,35 +19,26 @@ function startLevel(day) {
 }
 
 function setupDay1() {
-    active = true; score = 0;
+    active = true;
     document.getElementById('score-val').innerText = "0/5";
     requestAnimationFrame(loop);
 }
 
 function setupDay2() {
     gameActive = true;
-    distractionsSpawned = 0;
     distractionsDefeated = 0;
     document.getElementById('pvz-grid').classList.remove('hidden');
     document.getElementById('pvz-ui').classList.remove('hidden');
     document.getElementById('controls-d1').classList.add('hidden');
     document.getElementById('girl').style.display = 'none';
-    
     document.getElementById('snoopy').style.left = "40px";
-    document.getElementById('snoopy').style.bottom = "15%"; 
-    document.getElementById('snoopy-house').style.left = "10px";
-    
     document.getElementById('score-val').innerText = "100";
     hearts = 100;
 
-    // Spawns distractions until we hit the limit
     const spawner = setInterval(() => {
         if(!gameActive) return clearInterval(spawner);
-        if(distractionsSpawned < TOTAL_TO_WIN) {
-            spawnDistraction();
-            distractionsSpawned++;
-        }
-    }, 4000); 
+        spawnDistraction();
+    }, 4500); 
 }
 
 function selectWoodstock() {
@@ -68,31 +58,35 @@ document.querySelectorAll('.lane').forEach(lane => {
             document.getElementById('score-val').innerText = hearts;
             isPlacing = false;
             document.querySelector('.seed-card').classList.remove('selected');
-            setInterval(() => { if(gameActive) shootHeart(lane); }, 2500);
+            setInterval(() => { if(gameActive) shootHeart(lane); }, 2000);
         }
     };
 });
 
 function shootHeart(lane) {
     const b = document.createElement('div');
-    b.innerHTML = "❤️"; b.className = "bullet"; b.style.left = "70px";
+    b.innerHTML = "❤️"; b.className = "bullet"; b.style.left = "60px";
     lane.appendChild(b);
-    let bX = 70;
+    let bX = 60;
+
     const move = setInterval(() => {
-        if(!gameActive) return clearInterval(move);
-        bX += 10; b.style.left = bX + "px"; 
-        
-        const enemy = lane.querySelector('.enemy');
-        if(enemy) {
-            const eX = parseInt(enemy.style.left);
-            if(bX > eX) {
-                enemy.remove();
+        if(!gameActive || !document.body.contains(b)) return clearInterval(move);
+        bX += 7; 
+        b.style.left = bX + "px"; 
+
+        // Targeted Lane Collision
+        const enemies = lane.querySelectorAll('.enemy');
+        enemies.forEach(en => {
+            const enX = parseInt(en.style.left);
+            if (bX >= enX - 20 && bX <= enX + 40) {
+                en.remove();
                 b.remove();
                 distractionsDefeated++;
                 checkWin();
                 clearInterval(move);
             }
-        }
+        });
+
         if(bX > window.innerWidth) { b.remove(); clearInterval(move); }
     }, 20);
 }
@@ -102,15 +96,19 @@ function spawnDistraction() {
     const lane = lanes[Math.floor(Math.random() * lanes.length)];
     const en = document.createElement('div');
     en.innerHTML = "📝"; en.className = "enemy"; 
+    en.style.left = (window.innerWidth - 100) + "px"; // Start at the edge
     lane.appendChild(en);
-    let eX = window.innerWidth - 200; 
-    en.style.left = eX + "px";
+    
+    let eX = window.innerWidth - 100;
     
     const walk = setInterval(() => {
-        if(!gameActive || !document.body.contains(en)) return clearInterval(walk);
-        eX -= 2; en.style.left = eX + "px"; 
+        if(!gameActive) return clearInterval(walk);
+        if(!document.body.contains(en)) return clearInterval(walk);
+
+        eX -= 2; 
+        en.style.left = eX + "px"; 
         
-        if(eX < 0) { 
+        if(eX < 20) { // If it hits the black line/Snoopy
             gameActive = false;
             clearInterval(walk); 
             alert("Snoopy got distracted! ❤️"); 
