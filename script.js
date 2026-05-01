@@ -4,7 +4,7 @@ let distractionsDefeated = 0;
 const TOTAL_TO_WIN = 10; 
 
 window.onload = () => {
-    let i = 0; const txt = "Hi Beautiful!|Pick a day and enjoy! ❤️";
+    let i = 0; const txt = "Hi Aaru!|you got a day 2 and enjoy! ❤️";
     const t = setInterval(() => {
         const typewriter = document.getElementById('typewriter');
         if (typewriter) {
@@ -91,7 +91,7 @@ document.querySelectorAll('.lane').forEach(lane => {
 
 function shootHeart(lane, bird) {
     const b = document.createElement('div');
-    b.innerHTML = "❤️"; 
+    b.innerHTML = "🪨"; 
     b.className = "bullet"; 
     b.style.left = (parseInt(bird.style.left) + 30) + "px";
     lane.appendChild(b);
@@ -140,7 +140,7 @@ function spawnDistraction() {
         if(eX < 15) { 
             gameActive = false;
             clearInterval(walk); 
-            alert("Blu distracted Snoopy! ❤️"); 
+            alert("Blinkit reached Snoopy!😔💔"); 
             location.reload(); 
         }
     }, 30);
